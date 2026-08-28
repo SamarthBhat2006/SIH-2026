@@ -1,0 +1,40 @@
+INCIDENT RESPONSE REPORT: IR-2026-0884
+NATIONAL CYBER OPERATIONS CENTER (NCOC) / NTRO
+DATE: 2026-08-28 14:30:00 UTC
+SEVERITY: HIGH
+CLASSIFICATION: SENSITIVE - FOR OFFICIAL USE ONLY
+
+1. EXECUTIVE OVERVIEW
+On August 28, 2026 at approximately 08:15 UTC, the Security Operations Center (SOC) identified anomalous authentication events across organizational email gateways and Azure Active Directory tenant endpoints. Investigation confirmed an active adversary conducting a coordinated credential harvesting phishing campaign targeting key administrative and engineering personnel.
+
+2. THREAT ACTOR & ATTACK MECHANISM
+The threat actor distributed high-priority phishing emails masquerading as internal IT Service Desk alerts titled "Urgent: Mandatory Multi-Factor Authentication Configuration Update Required".
+The phishing lures contained obfuscated hyperlinks redirecting users to a counterfeit single sign-on landing portal hosted on external infrastructure at 198.51.100.42 and domain verify-secops-ntro.org.
+
+Attack Vector:
+- Primary Ingress: Spear-phishing email with HTML lure attachments.
+- Secondary Stage: Credential capture via spoofed login page designed to harvest session tokens and bypass legacy authentication prompts.
+- Target Profile: 14 senior engineers and 3 system administrators received the lure. 4 personnel submitted credentials before containment.
+
+3. IMPACT & AFFECTED INFRASTRUCTURE
+- Affected Systems: Exchange Online Mail Gateway, Azure AD Endpoint Auth Services, and Workstation-Host-04.
+- Compromised Accounts: 4 user accounts identified with abnormal login origins from foreign IP 203.0.113.195.
+- Data Exfiltration: Initial triage indicates no large-scale database exfiltration occurred due to rapid token revocation within 18 minutes of trigger.
+- Internal Administrator Contact: secops-triage@ntro.gov.in / emergency line +91-11-2436-9900.
+
+4. INDICATORS OF COMPROMISE (IoCs)
+- Malicious IPs: 198.51.100.42, 203.0.113.195, 192.0.2.77
+- Phishing Domains: verify-secops-ntro.org, auth-gateway-update.net
+- Associated Vulnerability Reference: CVE-2024-21409 (Authentication Protocol Relay)
+- Internal Host Impacted: WS-ENG-0884.internal.net
+
+5. CONTAINMENT & MITIGATION ACTIONS UNDERTAKEN
+- Revoked all active user sessions and refreshed OAuth refresh tokens for all 4 affected accounts.
+- Ingested firewall block rules blocking inbound/outbound traffic to 198.51.100.42 and 203.0.113.195.
+- Enforced FIDO2 hardware token MFA requirements for all privileged administrators.
+- Distributed advisory update to all staff regarding counterfeit IT Service Desk lures.
+- Initiated cryptographic hashing and permanent ledger logging of all incident artefacts.
+
+PREPARED BY:
+Cyber Incident Triage Unit (CITU-7)
+National Technical Research Organisation

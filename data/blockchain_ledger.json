@@ -1,0 +1,14 @@
+[
+  {
+    "index": 0,
+    "timestamp": 1700000000.0,
+    "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "data": {
+      "event": "GENESIS_INITIALIZATION",
+      "organization": "National Technical Research Organisation (NTRO)",
+      "system": "Gen AI Content Transformation & Cryptographic Audit Ledger",
+      "security_policy": "Zero-Trust Data Isolation & SHA-256 Chaining"
+    },
+    "hash": "18416ffd34f4c515a7a9ffc6ea1bbc56e22f7243001d9c868f21261b739875cf"
+  }
+]

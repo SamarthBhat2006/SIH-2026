@@ -1,0 +1,27 @@
+THREAT ADVISORY: ZERO-DAY EXPLOITATION IN PERIMETER VPN APPLIANCES
+NATIONAL TECHNICAL RESEARCH ORGANISATION (NTRO)
+DATE: 2026-08-20 10:00:00 UTC
+SEVERITY: CRITICAL
+
+SUMMARY:
+A newly identified critical zero-day vulnerability (tracked as CVE-2026-44120) has been observed actively targeted in perimeter enterprise VPN gateways. The vulnerability allows unauthenticated remote code execution (RCE) via a memory corruption flaw in the web management daemon.
+
+OBSERVED ATTACK PATTERNS:
+- Attacker sends specially crafted HTTP POST payloads to endpoint `/dana-na/auth/url_default/welcome.cgi`.
+- Payloads trigger memory overwrites allowing arbitrary shell command execution with root privileges.
+- Adversary establishes persistent reverse webshells and attempts credential dumping from memory caches.
+
+AFFECTED SYSTEMS:
+- Gateway-Perimeter-VPN v9.1R1 through v9.1R18
+- Remote Access Concentrator Cluster Alpha
+
+INDICATORS OF COMPROMISE (IoCs):
+- Exploit Source IPs: 198.51.100.188, 203.0.113.88
+- Dropped Webshell: `/data/runtime/tmp/sess_token_cache.php`
+- C2 Callback Domain: command-telemetry-nodes.xyz
+
+RECOMMENDED MITIGATIONS:
+1. Isolate VPN management interfaces from external Internet exposure immediately.
+2. Apply emergency vendor hotfix patch KB-992144.
+3. Review audit logs for unexpected outbound connections to command-telemetry-nodes.xyz.
+4. Rotate all service certificates and administrative credentials stored on affected gateways.
