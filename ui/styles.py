@@ -155,6 +155,7 @@ def get_custom_css() -> str:
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 100%;
     }
 
     /* Force Streamlit's own markdown wrapper divs to honor centering inside the hero */
