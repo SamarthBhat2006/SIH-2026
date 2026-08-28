@@ -1,6 +1,7 @@
 """
 UI Components Module
 Reusable visual widgets, cards, presentation viewers, and pipeline visualizers.
+Styled with the Gumroad-inspired warm-cream & paper-white design system.
 """
 
 import re
@@ -9,38 +10,32 @@ import streamlit as st
 from typing import Dict, List, Any, Optional
 
 def render_header() -> None:
-    """Renders the top branding banner."""
+    """Renders the clean top branding banner."""
     st.markdown("""
-    <div class="ntro-header-container">
+    <div class="gumroad-header">
         <div>
-            <h1 class="ntro-title">⚡ NTRO GEN AI CONTENT TRANSFORMATION</h1>
-            <div class="ntro-subtitle">Problem Statement #26154 | Multi-Artefact Transformation • Cryptographic Ledger • Grounded Intelligence</div>
+            <h1 class="gumroad-title">
+                <span>⚡ NTRO Content Transformation Platform</span>
+            </h1>
+            <div class="gumroad-subtitle">Problem Statement #26154 • Grounded Multi-Artefact AI Engine with Cryptographic Blockchain Ledger</div>
         </div>
         <div>
-            <span class="ntro-badge">🛡️ NTRO CYBER ENGINE v1.0</span>
+            <span class="coin-badge">● NTRO Core v1.0</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
 def render_pipeline_stepper(current_stage: int = 0) -> None:
     """
-    Renders the 6-stage transformation pipeline visualizer.
-    Stages:
-    0: Idle
-    1: Ingestion & Extraction
-    2: Security Screening
-    3: Grounded Analysis
-    4: Multi-AI Transformation
-    5: SHA-256 Hashing
-    6: Blockchain Ledger Minted
+    Renders the 6-stage transformation pipeline visualizer with clean numbered steps.
     """
     stages = [
-        {"num": "1", "name": "Source Ingest", "icon": "📄"},
-        {"num": "2", "name": "Security Scan", "icon": "🛡️"},
-        {"num": "3", "name": "Fact Grounding", "icon": "🔍"},
-        {"num": "4", "name": "AI Transform", "icon": "⚡"},
-        {"num": "5", "name": "SHA-256 Hash", "icon": "🔐"},
-        {"num": "6", "name": "Block Ledger", "icon": "⛓️"},
+        {"num": "1", "name": "Source Ingest", "icon": "1"},
+        {"num": "2", "name": "Security Scan", "icon": "2"},
+        {"num": "3", "name": "Fact Grounding", "icon": "3"},
+        {"num": "4", "name": "AI Transform", "icon": "4"},
+        {"num": "5", "name": "SHA-256 Hash", "icon": "5"},
+        {"num": "6", "name": "Block Ledger", "icon": "6"},
     ]
 
     html = '<div class="pipeline-container">'
@@ -62,13 +57,13 @@ def render_pipeline_stepper(current_stage: int = 0) -> None:
         </div>
         """
         if i < len(stages):
-            html += '<div class="pipeline-arrow">➔</div>'
+            html += '<div class="pipeline-arrow">→</div>'
 
     html += '</div>'
     st.markdown(html, unsafe_allow_html=True)
 
 def render_security_badges(security_report: Dict[str, Any]) -> None:
-    """Renders security and sensitive data alerts."""
+    """Renders clean security and sensitive data notices."""
     inj = security_report.get("injection_report", {})
     sens = security_report.get("sensitive_report", {})
 
@@ -76,12 +71,12 @@ def render_security_badges(security_report: Dict[str, Any]) -> None:
         sigs = inj.get("signatures", [])
         matched_preview = ", ".join([f"'{s['matched_text']}'" for s in sigs[:3]])
         st.markdown(f"""
-        <div class="sec-warning-card">
-            <div class="sec-warning-title">⚠️ POTENTIAL PROMPT INJECTION DETECTED ({inj.get('risk_level')} RISK)</div>
-            <div style="font-size: 0.85rem; color: #ff8a80; margin-bottom: 0.3rem;">
-                Adversarial instructions identified in source text: {matched_preview}
+        <div class="alert-vermillion">
+            <div class="alert-vermillion-title">⚠️ Potential Prompt Injection Detected ({inj.get('risk_level')} Risk)</div>
+            <div style="font-size: 0.88rem; color: #242423; margin-bottom: 0.35rem;">
+                Adversarial instructions flagged in source text: <strong>{matched_preview}</strong>
             </div>
-            <div style="font-size: 0.78rem; color: #b0bec5;">
+            <div style="font-size: 0.82rem; color: #575756;">
                 {inj.get('mitigation_note')}
             </div>
         </div>
@@ -91,12 +86,12 @@ def render_security_badges(security_report: Dict[str, Any]) -> None:
         findings = sens.get("findings_by_category", {})
         categories = list(findings.keys())
         st.markdown(f"""
-        <div class="sec-notice-card">
-            <div class="sec-notice-title">🔍 SENSITIVE INFORMATION DETECTED ({sens.get('total_sensitive_items')} Items)</div>
-            <div style="font-size: 0.85rem; color: #ffe082; margin-bottom: 0.3rem;">
-                Pattern Matches: <strong>{', '.join(categories)}</strong>
+        <div class="alert-yellow">
+            <div class="alert-yellow-title">🔍 Sensitive Information Patterns Detected ({sens.get('total_sensitive_items')} Matches)</div>
+            <div style="font-size: 0.88rem; color: #242423; margin-bottom: 0.35rem;">
+                Detected patterns: <strong>{', '.join(categories)}</strong>
             </div>
-            <div style="font-size: 0.78rem; color: #cfd8dc;">
+            <div style="font-size: 0.82rem; color: #575756;">
                 {sens.get('advisory_note')}
             </div>
         </div>
@@ -106,7 +101,7 @@ def render_hash_badge(hash_val: str, label: str = "SHA-256 Digest") -> None:
     """Renders a formatted cryptographic hash badge."""
     st.markdown(f"""
     <div style="margin: 0.4rem 0;">
-        <span style="font-size: 0.75rem; color: #8b949e; text-transform: uppercase; font-weight: 600;">{label}: </span>
+        <span style="font-size: 0.78rem; color: #242423; font-weight: 600;">{label}: </span>
         <span class="hash-chip">{hash_val}</span>
     </div>
     """, unsafe_allow_html=True)
@@ -174,15 +169,15 @@ def render_interactive_slide_deck(presentation_text: str, key_suffix: str = "dec
     # Deck Header Controls
     col_prev, col_num, col_next = st.columns([1, 2, 1])
     with col_prev:
-        if st.button("◀ Previous Slide", key=f"prev_{key_suffix}", disabled=(current_idx == 0)):
+        if st.button("← Previous Slide", key=f"prev_{key_suffix}", disabled=(current_idx == 0)):
             st.session_state[state_key] = max(0, current_idx - 1)
             st.rerun()
             
     with col_num:
-        st.markdown(f"<div style='text-align: center; font-weight: 700; color: #00e5ff; padding-top: 5px;'>SLIDE {current_idx + 1} OF {total_slides}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='text-align: center; font-weight: 700; color: #000000; padding-top: 6px; font-size: 0.9rem;'>SLIDE {current_idx + 1} OF {total_slides}</div>", unsafe_allow_html=True)
         
     with col_next:
-        if st.button("Next Slide ▶", key=f"next_{key_suffix}", disabled=(current_idx == total_slides - 1)):
+        if st.button("Next Slide →", key=f"next_{key_suffix}", disabled=(current_idx == total_slides - 1)):
             st.session_state[state_key] = min(total_slides - 1, current_idx + 1)
             st.rerun()
 
@@ -190,8 +185,8 @@ def render_interactive_slide_deck(presentation_text: str, key_suffix: str = "dec
     slide = slides[current_idx]
     st.markdown(f"""
     <div class="slide-card">
-        <div class="slide-title">📌 {slide['title']}</div>
-        <div style="font-size: 0.95rem; color: #e6edf3; line-height: 1.6;">
+        <div class="slide-title">📄 {slide['title']}</div>
+        <div style="font-size: 0.95rem; color: #242423; line-height: 1.6;">
     """, unsafe_allow_html=True)
     
     st.markdown(slide['body'])
@@ -199,7 +194,7 @@ def render_interactive_slide_deck(presentation_text: str, key_suffix: str = "dec
     st.markdown(f"""
         </div>
         <div class="speaker-notes-box">
-            <strong style="color: #58a6ff;">🎙️ Presenter Notes:</strong><br>
+            <strong style="color: #000000;">🎙️ Presenter Notes:</strong><br>
             {slide['notes']}
         </div>
     </div>

@@ -2,6 +2,7 @@
 NTRO Gen AI Platform for Automated Content Transformation
 Main Streamlit Application Entrypoint
 Problem Statement ID: 26154 | Organization: NTRO
+Styled with Gumroad-inspired clean light design system.
 """
 
 import streamlit as st
@@ -17,13 +18,13 @@ from ui.about_view import render_about_view
 
 # Configure Streamlit Page
 st.set_page_config(
-    page_title="NTRO AI Content Transformation Platform",
+    page_title="NTRO Content Transformation Platform",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Inject Custom Cyber Dark Styles
+# Inject Custom Gumroad Light Design System
 st.markdown(get_custom_css(), unsafe_allow_html=True)
 
 # Initialize Persistent Singletons
@@ -43,10 +44,13 @@ render_header()
 
 # Sidebar Navigation
 st.sidebar.markdown("""
-<div style="text-align: center; padding: 0.5rem 0 1rem 0;">
-    <div style="font-size: 2rem;">🛡️</div>
-    <strong style="color: #00e5ff; font-size: 1.1rem;">NTRO PLATFORM</strong><br>
-    <span style="font-size: 0.75rem; color: #8b949e;">PS #26154 • CYBER & BLOCKCHAIN</span>
+<div style="padding: 0.5rem 0 1rem 0;">
+    <div style="font-size: 1.15rem; font-weight: 800; color: #000000; letter-spacing: -0.02em;">
+        ⚡ NTRO Platform
+    </div>
+    <div style="font-size: 0.8rem; color: #575756; margin-top: 2px;">
+        PS #26154 • Blockchain & Cyber
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -55,28 +59,29 @@ nav_choice = st.sidebar.radio(
     [
         "⚡ Transform Dashboard",
         "📜 History & Audit Logs",
-        "⛓️ Blockchain Ledger Explorer",
+        "⛓️ Blockchain Ledger",
         "🏛️ Problem & Architecture"
     ]
 )
 
-st.sidebar.markdown("---")
-st.sidebar.markdown("### 📊 System Status")
-summary = ledger.get_chain_summary()
-status_color = "🟢" if summary["is_valid"] else "🔴"
-st.sidebar.markdown(f"**Ledger Status:** {status_color} {'Valid' if summary['is_valid'] else 'Tampered'}")
-st.sidebar.markdown(f"**Total Blocks:** `{summary['total_blocks']}`")
-st.sidebar.markdown(f"**Total Audit Records:** `{history_db.get_total_count()}`")
+st.sidebar.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
+st.sidebar.markdown("<div style='font-weight: 700; font-size: 0.85rem; color: #000000; margin-bottom: 0.5rem;'>System Status</div>", unsafe_allow_html=True)
 
-st.sidebar.markdown("---")
-st.sidebar.caption("National Technical Research Organisation (NTRO) © 2026")
+summary = ledger.get_chain_summary()
+status_badge = "🟢 Valid" if summary["is_valid"] else "🔴 Tampered"
+st.sidebar.markdown(f"**Ledger:** {status_badge}")
+st.sidebar.markdown(f"**Total Blocks:** `{summary['total_blocks']}`")
+st.sidebar.markdown(f"**Audit Records:** `{history_db.get_total_count()}`")
+
+st.sidebar.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1.5rem 0;'>", unsafe_allow_html=True)
+st.sidebar.caption("National Technical Research Organisation (NTRO)")
 
 # Route to Selected View
 if nav_choice == "⚡ Transform Dashboard":
     render_dashboard(ledger, history_db)
 elif nav_choice == "📜 History & Audit Logs":
     render_history_view(history_db)
-elif nav_choice == "⛓️ Blockchain Ledger Explorer":
+elif nav_choice == "⛓️ Blockchain Ledger":
     render_ledger_view(ledger)
 elif nav_choice == "🏛️ Problem & Architecture":
     render_about_view()

@@ -1,6 +1,7 @@
 """
 Blockchain Ledger & Integrity Explorer View Module
 Visualizes the append-only cryptographic blockchain blocks and performs real-time tamper verification.
+Styled with the Gumroad-inspired clean light design system.
 """
 
 import time
@@ -10,8 +11,8 @@ from ui.components import render_hash_badge
 
 def render_ledger_view(ledger: BlockchainLedger) -> None:
     """Renders the Blockchain Ledger explorer and verification portal."""
-    st.markdown("### ⛓️ Cryptographic Blockchain Ledger & Integrity Explorer")
-    st.caption("Immutable append-only block ledger securing source-to-artefact provenance for NTRO operational integrity.")
+    st.markdown("### ⛓️ Cryptographic Blockchain Ledger")
+    st.caption("Append-only block ledger securing source-to-artefact provenance with SHA-256 cryptographic chaining.")
 
     # Ledger Summary Statistics
     summary = ledger.get_chain_summary()
@@ -26,12 +27,11 @@ def render_ledger_view(ledger: BlockchainLedger) -> None:
         </div>
         """, unsafe_allow_html=True)
     with m2:
-        status_color = "#00e676" if is_valid else "#ff1744"
-        status_text = "VERIFIED IMMUTABLE" if is_valid else "CORRUPTED / TAMPERED"
+        status_text = "VERIFIED (100%)" if is_valid else "TAMPERED"
         st.markdown(f"""
         <div class="metric-box">
-            <div class="metric-value" style="color: {status_color}; font-size: 1.1rem;">{status_text}</div>
-            <div class="metric-title">Cryptographic Integrity</div>
+            <div class="metric-value" style="font-size: 1.25rem;">{status_text}</div>
+            <div class="metric-title">Chain Integrity</div>
         </div>
         """, unsafe_allow_html=True)
     with m3:
@@ -39,7 +39,7 @@ def render_ledger_view(ledger: BlockchainLedger) -> None:
         disp_latest = (latest[:12] + "...") if latest else "N/A"
         st.markdown(f"""
         <div class="metric-box">
-            <div class="metric-value" style="font-size: 1.1rem; color: #58a6ff;">{disp_latest}</div>
+            <div class="metric-value" style="font-size: 1.15rem; font-family: monospace;">{disp_latest}</div>
             <div class="metric-title">Head Block Digest</div>
         </div>
         """, unsafe_allow_html=True)
@@ -49,9 +49,9 @@ def render_ledger_view(ledger: BlockchainLedger) -> None:
     # Verification Action Row
     col_v1, col_v2 = st.columns([2, 1])
     with col_v1:
-        if st.button("🔐 Run Real-Time Cryptographic Ledger Verification", type="primary", use_container_width=True):
-            with st.spinner("Calculating full chain SHA-256 recursive checksums..."):
-                time.sleep(0.4)
+        if st.button("🔐 Run Cryptographic Chain Verification", type="primary", use_container_width=True):
+            with st.spinner("Validating SHA-256 block chain checksums..."):
+                time.sleep(0.3)
                 v_valid, v_msg, v_bad = ledger.verify_chain_integrity()
                 if v_valid:
                     st.success(f"✓ {v_msg}")
@@ -59,27 +59,25 @@ def render_ledger_view(ledger: BlockchainLedger) -> None:
                     st.error(f"❌ TAMPERING DETECTED: {v_msg} at Block #{v_bad}")
 
     with col_v2:
-        if st.button("🔄 Reload Ledger From Disk", use_container_width=True):
+        if st.button("🔄 Reload Ledger", use_container_width=True):
             ledger.load_or_initialize()
             st.rerun()
 
-    st.markdown("---")
+    st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1.5rem 0;'>", unsafe_allow_html=True)
     st.markdown("#### 🧱 Sequential Block Explorer")
 
-    # Render Blocks in Reverse Chronological Order (Newest First)
+    # Render Blocks in Reverse Chronological Order
     for block in reversed(ledger.chain):
         is_genesis = (block.index == 0)
-        card_border = "border-left: 4px solid #00e676;" if is_genesis else "border-left: 4px solid #00e5ff;"
         block_type_label = "🌟 GENESIS BLOCK" if is_genesis else f"📦 TRANSFORMATION BLOCK #{block.index}"
-        
         block_time_str = time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime(block.timestamp))
 
-        with st.expander(f"{block_type_label} | Hash: {block.hash[:16]}... | {block_time_str}", expanded=(block.index == len(ledger.chain) - 1)):
+        with st.expander(f"{block_type_label} — {block.hash[:16]}... ({block_time_str})", expanded=(block.index == len(ledger.chain) - 1)):
             st.markdown(f"""
             <div style="padding: 0.5rem 0;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                    <strong style="color: #00e5ff;">Block #{block.index}</strong>
-                    <span style="color: #8b949e; font-size: 0.8rem;">Timestamp: {block_time_str}</span>
+                    <strong style="color: #000000; font-size: 1.05rem;">Block #{block.index}</strong>
+                    <span style="color: #575756; font-size: 0.82rem;">Timestamp: {block_time_str}</span>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -87,5 +85,5 @@ def render_ledger_view(ledger: BlockchainLedger) -> None:
             render_hash_badge(block.hash, "Block Hash (SHA-256)")
             render_hash_badge(block.previous_hash, "Previous Block Link")
 
-            st.markdown("**Block Transaction Payload (Data):**")
+            st.markdown("**Transaction Payload:**")
             st.json(block.data)

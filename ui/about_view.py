@@ -1,6 +1,7 @@
 """
 About & System Documentation View Module
 Details problem statement 26154, system architecture, security compliance, and research provenance.
+Styled with the Gumroad-inspired clean light design system.
 """
 
 import streamlit as st
@@ -12,13 +13,13 @@ def render_about_view() -> None:
     st.caption("Theme: Blockchain & Cybersecurity | Category: Software")
 
     st.markdown("""
-    <div class="cyber-card">
-        <div class="cyber-card-title">🎯 The Core Challenge</div>
-        <p style="color: #c9d1d9; font-size: 0.92rem; line-height: 1.6;">
-            Government and national intelligence bodies like the <strong>National Technical Research Organisation (NTRO)</strong> 
-            process massive volumes of high-stakes information daily: cyber threat advisories, technical incident post-mortems, 
-            satellite intelligence analyses, and regulatory directives. Disseminating this single source of truth across diverse audiences 
-            (Cabinet Leadership, Technical SOC Engineers, Inter-Agency Partners, and Public Media) currently demands hours of manual, error-prone authoring.
+    <div class="paper-card">
+        <div class="paper-card-title">🎯 The Core Challenge</div>
+        <p style="color: #242423; font-size: 0.92rem; line-height: 1.6; margin: 0;">
+            Government and national technical organizations process massive volumes of operational documents daily: 
+            cyber threat advisories, technical post-mortems, and regulatory directives. Disseminating this single source of truth 
+            across diverse audiences (Leadership, Technical Teams, Partner Agencies, and the Public) requires rapid, grounded, 
+            and cryptographically auditable multi-artefact transformation.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -26,31 +27,31 @@ def render_about_view() -> None:
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("""
-        <div class="cyber-card">
-            <div class="cyber-card-title">🛡️ Security & Zero-Trust Defense</div>
-            <ul style="color: #c9d1d9; font-size: 0.88rem; line-height: 1.6; padding-left: 1.2rem;">
-                <li><strong>Untrusted Data Isolation:</strong> Ingested text and documents are wrapped in passive token contexts.</li>
-                <li><strong>Adversarial Injection Scanner:</strong> Heuristically catches prompt overrides, jailbreaks, and system hijacking.</li>
-                <li><strong>Sensitive Pattern Identifier:</strong> Scans for exposed internal IPv4/IPv6, API keys, credentials, and emails.</li>
-                <li><strong>Grounded Anti-Hallucination:</strong> Enforces deterministic extraction so the AI never fabricates IoCs, CVEs, or dates.</li>
+        <div class="paper-card">
+            <div class="paper-card-title">🛡️ Security & Zero-Trust Defense</div>
+            <ul style="color: #242423; font-size: 0.88rem; line-height: 1.6; padding-left: 1.2rem; margin: 0;">
+                <li><strong>Untrusted Data Isolation:</strong> Ingested content is treated strictly as passive data.</li>
+                <li><strong>Adversarial Injection Scanner:</strong> Catches prompt overrides, jailbreaks, and system hijacking.</li>
+                <li><strong>Sensitive Pattern Identifier:</strong> Scans for exposed internal IPv4/IPv6, API keys, and credentials.</li>
+                <li><strong>Grounded Anti-Hallucination:</strong> Deterministic extraction ensures the AI never invents facts or IoCs.</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
 
     with col2:
         st.markdown("""
-        <div class="cyber-card">
-            <div class="cyber-card-title">⛓️ Cryptographic Provenance & Ledger</div>
-            <ul style="color: #c9d1d9; font-size: 0.88rem; line-height: 1.6; padding-left: 1.2rem;">
-                <li><strong>SHA-256 Digital Fingerprints:</strong> Deterministic hashing for original source and every generated artefact.</li>
-                <li><strong>Append-Only Blockchain Ledger:</strong> Sequential blocks linked by previous hash hashes for immutable auditability.</li>
-                <li><strong>Real-Time Tamper Detection:</strong> Instant mathematical verification that alerts if any historical block has been altered.</li>
-                <li><strong>Zero Secret Leakage:</strong> Strict environment configuration with multi-LLM offline fallback reliability.</li>
+        <div class="paper-card">
+            <div class="paper-card-title">⛓️ Cryptographic Provenance & Ledger</div>
+            <ul style="color: #242423; font-size: 0.88rem; line-height: 1.6; padding-left: 1.2rem; margin: 0;">
+                <li><strong>SHA-256 Digital Fingerprints:</strong> Deterministic hashing for original source and all artefacts.</li>
+                <li><strong>Append-Only Blockchain Ledger:</strong> Sequential blocks linked by cryptographic hashes.</li>
+                <li><strong>Real-Time Tamper Detection:</strong> Validates ledger integrity and pinpoints any corrupted block.</li>
+                <li><strong>Zero Secret Leakage:</strong> Strict environment variables with offline fallback reliability.</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("---")
+    st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1.5rem 0;'>", unsafe_allow_html=True)
     st.markdown("### 📊 Architecture & Transformation Workflow")
     
     st.markdown("""

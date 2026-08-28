@@ -1,6 +1,7 @@
 """
 Dashboard View Module
 Main workspace for source ingestion, security screening, configuration, multi-artefact generation, and export.
+Styled with the Gumroad-inspired clean light design system.
 """
 
 import time
@@ -54,11 +55,11 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
         st.session_state.pipeline_stage = 0
 
     # Layout: Top Quick Actions
-    col_demo, col_clear = st.columns([4, 1])
+    col_demo, col_clear = st.columns([3.5, 1])
     with col_demo:
         c1, c2 = st.columns([1, 1])
         with c1:
-            if st.button("📁 Load Sample Incident Report (Demo 1)", use_container_width=True):
+            if st.button("📁 Load Incident Report (Demo 1)", use_container_width=True):
                 sample_file = SAMPLE_DATA_DIR / "incident_report.txt"
                 if sample_file.exists():
                     text = sample_file.read_text(encoding="utf-8")
@@ -85,7 +86,7 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                     st.rerun()
 
     with col_clear:
-        if st.button("🧹 Clear Workspace", use_container_width=True):
+        if st.button("Clear", use_container_width=True):
             st.session_state.source_content = ""
             st.session_state.source_name = "Direct_Text_Input.txt"
             st.session_state.source_type = "text"
@@ -106,20 +107,23 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
     # LEFT COLUMN: SOURCE INGESTION & CONFIG
     # ==========================================
     with col_left:
-        st.markdown("### 📥 1. Source Information Ingestion")
+        st.markdown("""
+        <div class="paper-card">
+            <div class="paper-card-title">📥 1. Source Document Ingestion</div>
+        """, unsafe_allow_html=True)
 
         input_method = st.radio(
-            "Select Ingestion Method:",
-            ["Direct Paste", "Upload File (TXT, PDF, DOCX)"],
+            "Ingestion Method:",
+            ["Direct Paste", "Upload Document (PDF, DOCX, TXT)"],
             horizontal=True
         )
 
         if input_method == "Direct Paste":
             pasted_text = st.text_area(
-                "Source Content / Operational Brief:",
+                "Source Content / Briefing:",
                 value=st.session_state.source_content,
-                height=180,
-                placeholder="Paste raw cybersecurity incident logs, operational briefings, intelligence notes, or policy documents here..."
+                height=170,
+                placeholder="Paste raw cybersecurity incident logs, operational briefings, intelligence notes, or policy documents..."
             )
             if pasted_text != st.session_state.source_content:
                 st.session_state.source_content = pasted_text
@@ -136,9 +140,9 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
 
         else:
             uploaded_file = st.file_uploader(
-                "Upload Document (PDF, DOCX, or TXT):",
+                "Choose file:",
                 type=["txt", "pdf", "docx"],
-                help="Maximum size: 10MB"
+                help="Max size 10MB"
             )
             if uploaded_file is not None:
                 try:
@@ -150,46 +154,46 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                     st.session_state.security_report = SecurityScanner.full_scan(parsed["content"])
                     st.session_state.source_hash = IntegrityHasher.hash_text(parsed["content"])
                     st.session_state.pipeline_stage = 2
-                    st.success(f"✓ Successfully extracted {parsed['word_count']} words from `{uploaded_file.name}`")
+                    st.success(f"✓ Extracted {parsed['word_count']} words from {uploaded_file.name}")
                 except DocumentProcessingError as e:
                     st.error(f"Extraction Error: {str(e)}")
 
         # Source Metadata & Security Panel
         if st.session_state.source_content:
-            st.markdown("---")
-            st.markdown("#### 🛡️ Real-Time Security & Integrity Screening")
+            st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1.25rem 0;'>", unsafe_allow_html=True)
+            render_hash_badge(st.session_state.source_hash, "Source Hash")
             
-            # Show Hash Badge
-            render_hash_badge(st.session_state.source_hash, "Source Cryptographic Fingerprint (SHA-256)")
-            
-            # Security Scanning Card
             if st.session_state.security_report:
                 render_security_badges(st.session_state.security_report)
 
+        st.markdown("</div>", unsafe_allow_html=True)
+
         # Configuration Section
-        st.markdown("---")
-        st.markdown("### ⚙️ 2. Transformation Parameters")
+        st.markdown("""
+        <div class="paper-card">
+            <div class="paper-card-title">⚙️ 2. Transformation Settings</div>
+        """, unsafe_allow_html=True)
 
         cfg_col1, cfg_col2 = st.columns(2)
         with cfg_col1:
             selected_audience = st.selectbox("Target Audience:", AUDIENCE_OPTIONS, index=0)
             selected_detail = st.selectbox("Level of Detail:", DETAIL_LEVEL_OPTIONS, index=1)
         with cfg_col2:
-            selected_tone = st.selectbox("Communication Tone:", TONE_OPTIONS, index=0)
-            selected_objective = st.selectbox("Primary Objective:", OBJECTIVE_OPTIONS, index=0)
+            selected_tone = st.selectbox("Tone:", TONE_OPTIONS, index=0)
+            selected_objective = st.selectbox("Objective:", OBJECTIVE_OPTIONS, index=0)
 
-        # Target Output Formats (Multi-Output Selection)
-        st.markdown("#### 🎯 3. Target Output Formats (Multi-Artefact)")
-        st.caption("Select one or more communication artefacts to generate from the same source:")
+        # Target Output Formats
+        st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
+        st.markdown("<div style='font-weight:600; font-size:0.9rem; color:#000000; margin-bottom: 0.5rem;'>3. Target Formats (Multi-Artefact)</div>", unsafe_allow_html=True)
 
         c_opt1, c_opt2 = st.columns(2)
         with c_opt1:
-            chk_exec = st.checkbox("📋 Executive Summary", value=True)
-            chk_adv = st.checkbox("🚨 Cybersecurity Advisory", value=True)
-            chk_pres = st.checkbox("📊 Presentation Deck", value=True)
+            chk_exec = st.checkbox("Executive Summary", value=True)
+            chk_adv = st.checkbox("Cybersecurity Advisory", value=True)
+            chk_pres = st.checkbox("Presentation Deck", value=True)
         with c_opt2:
-            chk_link = st.checkbox("💼 LinkedIn Post", value=True)
-            chk_x = st.checkbox("🧵 X / Twitter Thread", value=True)
+            chk_link = st.checkbox("LinkedIn Post", value=True)
+            chk_x = st.checkbox("X / Twitter Thread", value=True)
 
         selected_outputs = []
         if chk_exec: selected_outputs.append("executive_summary")
@@ -201,17 +205,19 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
         # Generate Button
         st.markdown("<br>", unsafe_allow_html=True)
         btn_transform = st.button(
-            "⚡ TRANSFORM CONTENT (MULTI-ARTEFACT)",
+            "Transform Content →",
             type="primary",
             use_container_width=True,
             disabled=not (st.session_state.source_content.strip() and selected_outputs)
         )
 
+        st.markdown("</div>", unsafe_allow_html=True)
+
         if btn_transform:
             if not st.session_state.source_content.strip():
-                st.warning("Please provide source content before generating.")
+                st.warning("Please provide source content first.")
             elif not selected_outputs:
-                st.warning("Please select at least one output format.")
+                st.warning("Please select at least one target format.")
             else:
                 config_meta = {
                     "audience": selected_audience,
@@ -220,22 +226,21 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                     "objective": selected_objective
                 }
 
-                # Animate Progress
-                progress_bar = st.progress(0, text="Initiating Grounded Transformation Pipeline...")
+                progress_bar = st.progress(0, text="Initiating Grounded Transformation...")
                 
                 # Step 1: Security Screening
                 st.session_state.pipeline_stage = 2
-                progress_bar.progress(25, text="Running Input Security & Threat Screening...")
+                progress_bar.progress(25, text="Running Input Security Analysis...")
                 time.sleep(0.3)
                 
                 # Step 2: Content Analysis & Grounding
                 st.session_state.pipeline_stage = 3
-                progress_bar.progress(50, text="Extracting Anti-Hallucination Grounding Facts...")
+                progress_bar.progress(50, text="Extracting Grounding Facts...")
                 time.sleep(0.3)
                 
                 # Step 3: Multi-AI Transformation
                 st.session_state.pipeline_stage = 4
-                progress_bar.progress(70, text=f"Generating {len(selected_outputs)} Communication Artefacts...")
+                progress_bar.progress(70, text=f"Generating {len(selected_outputs)} Artefacts...")
                 
                 ai = AIEngine()
                 results = ai.generate_multiple_artefacts(
@@ -246,13 +251,13 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                 
                 # Step 4: Cryptographic Hashing
                 st.session_state.pipeline_stage = 5
-                progress_bar.progress(85, text="Generating Cryptographic SHA-256 Artefact Digests...")
+                progress_bar.progress(85, text="Generating SHA-256 Digests...")
                 out_hashes = IntegrityHasher.generate_artefact_hashes(results)
                 time.sleep(0.2)
                 
                 # Step 5: Mint Blockchain Block & Save History
                 st.session_state.pipeline_stage = 6
-                progress_bar.progress(95, text="Minting Immutable Blockchain Audit Block...")
+                progress_bar.progress(95, text="Recording to Blockchain Ledger...")
                 
                 sec_stat = st.session_state.security_report.get("overall_status", "CLEAN") if st.session_state.security_report else "CLEAN"
                 
@@ -280,7 +285,7 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                     block_hash=new_block.hash
                 )
                 
-                progress_bar.progress(100, text="Transformation & Audit Ledger Commit Complete!")
+                progress_bar.progress(100, text="Transformation Complete!")
                 time.sleep(0.2)
                 progress_bar.empty()
 
@@ -293,18 +298,21 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
     # RIGHT COLUMN: GENERATED ARTEFACTS
     # ==========================================
     with col_right:
-        st.markdown("### 📤 Generated Communication Artefacts")
+        st.markdown("""
+        <div class="paper-card">
+            <div class="paper-card-title">📤 Generated Communication Artefacts</div>
+        """, unsafe_allow_html=True)
 
         if not st.session_state.transformation_results:
             st.markdown("""
-            <div class="cyber-card" style="text-align: center; padding: 3rem 1.5rem; color: #8b949e;">
-                <div style="font-size: 2.5rem; margin-bottom: 0.8rem;">⚡</div>
-                <div style="font-weight: 700; color: #c9d1d9; font-size: 1.1rem; margin-bottom: 0.5rem;">
-                    Ready for Multi-Artefact Generation
+            <div style="text-align: center; padding: 3rem 1.5rem; color: #575756;">
+                <div style="font-size: 2.2rem; margin-bottom: 0.6rem;">📄</div>
+                <div style="font-weight: 700; color: #000000; font-size: 1.05rem; margin-bottom: 0.35rem;">
+                    Ready for Generation
                 </div>
-                <div style="font-size: 0.85rem; max-width: 380px; margin: 0 auto;">
-                    Ingest source content on the left, choose your target audience and formats, and click 
-                    <strong>Transform Content</strong> to produce 5 grounded artefacts simultaneously.
+                <div style="font-size: 0.88rem; max-width: 360px; margin: 0 auto; color: #575756;">
+                    Ingest source content on the left, pick target parameters, and click 
+                    <strong>Transform Content</strong> to generate all communication artefacts from 1 source.
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -317,11 +325,9 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
             # Top Ledger Anchor Badge
             if block:
                 st.markdown(f"""
-                <div class="cyber-card" style="padding: 0.8rem 1rem; border-color: rgba(0, 230, 118, 0.4);">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span class="verified-pill">✓ ANCHORED IN BLOCK #{block.index}</span>
-                        <span style="font-size: 0.75rem; color: #8b949e;">Prev Block: <code>{block.previous_hash[:12]}...</code></span>
-                    </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0 1rem 0; border-bottom: 1px solid #d1d5dc; margin-bottom: 1rem;">
+                    <span class="verified-pill">✓ Anchored in Block #{block.index}</span>
+                    <span style="font-size: 0.78rem; color: #575756; font-family: monospace;">Prev: {block.previous_hash[:12]}...</span>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -331,14 +337,13 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
 
             for i, (art_key, content) in enumerate(results.items()):
                 with tabs[i]:
-                    # Hash & Quick Actions Row
                     hash_val = out_hashes.get(art_key, "N/A")
                     render_hash_badge(hash_val, f"{OUTPUT_TYPES.get(art_key)} Hash")
 
                     col_c1, col_c2 = st.columns([1, 1])
                     with col_c1:
                         st.download_button(
-                            label=f"💾 Download {OUTPUT_TYPES.get(art_key)} (.md)",
+                            label=f"Download (.md)",
                             data=content,
                             file_name=f"{art_key}_{int(time.time())}.md",
                             mime="text/markdown",
@@ -346,23 +351,22 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                         )
                     with col_c2:
                         st.download_button(
-                            label=f"📄 Download as TXT",
+                            label=f"Download (.txt)",
                             data=content,
                             file_name=f"{art_key}_{int(time.time())}.txt",
                             mime="text/plain",
                             key=f"dl_txt_{art_key}"
                         )
 
-                    st.markdown("---")
+                    st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
 
-                    # Special Presentation Deck Interactive Render
                     if art_key == "presentation":
                         render_interactive_slide_deck(content, key_suffix="dash")
                     else:
                         st.markdown(content)
 
             # Export Complete Transformation Package
-            st.markdown("---")
+            st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1.25rem 0;'>", unsafe_allow_html=True)
             audit_bundle = {
                 "source_name": st.session_state.source_name,
                 "source_hash": st.session_state.source_hash,
@@ -371,9 +375,11 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                 "blockchain_block": block.to_dict() if block else None
             }
             st.download_button(
-                label="📦 Download Complete Cryptographic Audit Package (.JSON)",
+                label="📦 Download Complete Audit Package (.JSON)",
                 data=json.dumps(audit_bundle, indent=2),
                 file_name=f"transformation_audit_package_{int(time.time())}.json",
                 mime="application/json",
                 use_container_width=True
             )
+
+        st.markdown("</div>", unsafe_allow_html=True)

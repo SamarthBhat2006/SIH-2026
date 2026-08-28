@@ -1,6 +1,7 @@
 """
 History & Audit Inspector View Module
 Visualizes past transformation events, security statuses, cryptographic hashes, and stored artefacts.
+Styled with the Gumroad-inspired clean light design system.
 """
 
 import json
@@ -10,17 +11,17 @@ from ui.components import render_hash_badge, render_interactive_slide_deck
 
 def render_history_view(history_db: TransformationHistoryDB) -> None:
     """Renders the historical transformation audit log."""
-    st.markdown("### 📜 Transformation Audit & Provenance History")
-    st.caption("Immutable record of all source documents and derived communication artefacts stored in local SQLite persistence.")
+    st.markdown("### 📜 Transformation Audit & History")
+    st.caption("Immutable record of all source documents and derived communication artefacts.")
 
     records = history_db.get_all(limit=50)
 
     if not records:
         st.markdown("""
-        <div class="cyber-card" style="text-align: center; padding: 2.5rem; color: #8b949e;">
+        <div class="paper-card" style="text-align: center; padding: 2.5rem; color: #575756;">
             <div style="font-size: 2rem; margin-bottom: 0.5rem;">📂</div>
-            <div style="font-weight: 600; color: #c9d1d9;">No Transformation History Found</div>
-            <div style="font-size: 0.85rem;">Transform a document in the Dashboard to record your first cryptographic audit log.</div>
+            <div style="font-weight: 700; color: #000000;">No Transformation History Found</div>
+            <div style="font-size: 0.88rem; margin-top: 0.25rem;">Transform a document in the Dashboard to record your first cryptographic audit log.</div>
         </div>
         """, unsafe_allow_html=True)
         return
@@ -66,23 +67,23 @@ def render_history_view(history_db: TransformationHistoryDB) -> None:
 
     # Render Record Cards / Accordions
     for rec in filtered_records:
-        sec_color = "#00e676" if "CLEAN" in rec["security_status"] else ("#ffd740" if "NOTICE" in rec["security_status"] else "#ff5252")
+        sec_label = "Clean" if "CLEAN" in rec["security_status"] else ("Notice" if "NOTICE" in rec["security_status"] else "Warning")
         
         with st.expander(f"📄 {rec['id']} — {rec['source_name']} ({rec['created_at_str']}) — Block #{rec['block_index']}"):
             c1, c2 = st.columns([1, 1])
             with c1:
                 st.markdown(f"**Document ID:** `{rec['id']}`")
                 st.markdown(f"**Source Format:** `{rec['source_type'].upper()}`")
-                st.markdown(f"**Security Verdict:** <span style='color:{sec_color}; font-weight:700;'>{rec['security_status']}</span>", unsafe_allow_html=True)
+                st.markdown(f"**Security Scan:** `{sec_label}`")
                 render_hash_badge(rec['source_hash'], "Source Hash")
             with c2:
                 st.markdown(f"**Anchored Block:** `#{rec['block_index']}`")
-                st.markdown(f"**Block Hash:** `{rec['block_hash'][:20]}...`")
-                st.markdown(f"**Artefacts Produced:** `{len(rec['selected_outputs'])} artefacts`")
-                st.markdown(f"**Config:** *Audience:* {rec['config'].get('audience')} | *Tone:* {rec['config'].get('tone')}")
+                st.markdown(f"**Block Hash:** `{rec['block_hash'][:18]}...`")
+                st.markdown(f"**Artefacts Generated:** `{len(rec['selected_outputs'])} outputs`")
+                st.markdown(f"**Settings:** *Audience:* {rec['config'].get('audience')} | *Tone:* {rec['config'].get('tone')}")
 
-            st.markdown("---")
-            st.markdown("#### 📂 Generated Artefacts")
+            st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
+            st.markdown("#### Generated Artefacts")
 
             sub_tabs = st.tabs([k.replace("_", " ").title() for k in rec["outputs"].keys()])
             for idx, (art_name, art_content) in enumerate(rec["outputs"].items()):
