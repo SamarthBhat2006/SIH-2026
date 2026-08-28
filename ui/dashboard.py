@@ -62,10 +62,6 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
     render_hero_banner()
 
     # 2. Quick Demo Action Bar
-    st.markdown("""
-    <div style="display:flex; justify-content:center; gap:12px; margin-bottom: 2rem;">
-    """, unsafe_allow_html=True)
-    
     col_d1, col_d2, col_d3 = st.columns([1.5, 1.5, 1])
     with col_d1:
         if st.button("📁 Load Incident Report (Demo 1)", use_container_width=True):
@@ -115,10 +111,7 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
     # LEFT COLUMN: INGESTION & SETTINGS
     # ==========================================
     with col_left:
-        st.markdown("""
-        <div class="gumroad-box">
-            <div class="gumroad-box-title">📥 1. Ingest Source Information</div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div class="gumroad-box"><div class="gumroad-box-title">📥 1. Ingest Source Information</div>', unsafe_allow_html=True)
 
         input_method = st.radio(
             "Select Method:",
@@ -176,10 +169,7 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
         st.markdown("</div>", unsafe_allow_html=True)
 
         # Settings Card
-        st.markdown("""
-        <div class="gumroad-box">
-            <div class="gumroad-box-title">⚙️ 2. Configure Transformation</div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div class="gumroad-box"><div class="gumroad-box-title">⚙️ 2. Configure Transformation</div>', unsafe_allow_html=True)
 
         cfg_col1, cfg_col2 = st.columns(2)
         with cfg_col1:
@@ -299,24 +289,14 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
     # RIGHT COLUMN: GENERATED ARTEFACTS
     # ==========================================
     with col_right:
-        st.markdown("""
-        <div class="gumroad-box">
-            <div class="gumroad-box-title">📤 Generated Communication Artefacts</div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div class="gumroad-box"><div class="gumroad-box-title">📤 Generated Communication Artefacts</div>', unsafe_allow_html=True)
 
         if not st.session_state.transformation_results:
-            st.markdown("""
-            <div style="text-align: center; padding: 3.5rem 1.5rem; color: #575756;">
-                <div style="font-size: 2.5rem; margin-bottom: 0.6rem;">📄</div>
-                <div style="font-weight: 800; color: #000000; font-size: 1.15rem; margin-bottom: 0.35rem;">
-                    Ready to Generate
-                </div>
-                <div style="font-size: 0.92rem; max-width: 360px; margin: 0 auto; color: #575756; line-height: 1.5;">
-                    Ingest source content on the left, pick target parameters, and click 
-                    <strong>Transform Content</strong> to produce 5 grounded artefacts simultaneously.
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("""<div style="text-align: center; padding: 3.5rem 1.5rem; color: #575756;">
+<div style="font-size: 2.5rem; margin-bottom: 0.6rem;">📄</div>
+<div style="font-weight: 800; color: #000000; font-size: 1.15rem; margin-bottom: 0.35rem;">Ready to Generate</div>
+<div style="font-size: 0.92rem; max-width: 360px; margin: 0 auto; color: #575756; line-height: 1.5;">Ingest source content on the left, pick target parameters, and click <strong>Transform Content</strong> to produce 5 grounded artefacts simultaneously.</div>
+</div>""", unsafe_allow_html=True)
 
         else:
             results = st.session_state.transformation_results
@@ -325,14 +305,10 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
 
             # Top Ledger Anchor Badge
             if block:
-                st.markdown(f"""
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0 1rem 0; border-bottom: 1px solid #d1d5dc; margin-bottom: 1rem;">
-                    <span style="background-color: #f4f4f0; border: 1px solid #000000; padding: 4px 12px; border-radius: 9999px; font-size: 0.8rem; font-weight: 700; color: #000000;">
-                        ✓ Anchored in Block #{block.index}
-                    </span>
-                    <span style="font-size: 0.78rem; color: #575756; font-family: monospace;">Prev: {block.previous_hash[:12]}...</span>
-                </div>
-                """, unsafe_allow_html=True)
+                st.markdown(f"""<div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0 1rem 0; border-bottom: 1px solid #d1d5dc; margin-bottom: 1rem;">
+<span style="background-color: #f4f4f0; border: 1px solid #000000; padding: 4px 12px; border-radius: 9999px; font-size: 0.8rem; font-weight: 700; color: #000000;">✓ Anchored in Block #{block.index}</span>
+<span style="font-size: 0.78rem; color: #575756; font-family: monospace;">Prev: {block.previous_hash[:12]}...</span>
+</div>""", unsafe_allow_html=True)
 
             # Output Tabs
             tab_titles = [OUTPUT_TYPES.get(k, k.title()) for k in results.keys()]

@@ -1,6 +1,6 @@
 """
 UI Components Module
-Renders authentic Gumroad UI elements:
+Renders authentic Gumroad UI elements with precise HTML rendering (zero markdown indentation issues):
 - Top Navigation Bar with Logo, Stat Badge, Nav links, and Action Button.
 - Hero Banner with oversized typography and floating hot-pink coins.
 - Pipeline stepper, security alerts, and slide deck viewer.
@@ -13,42 +13,34 @@ from typing import Dict, List, Any, Optional
 
 def render_top_navbar(current_view: str = "Dashboard") -> None:
     """Renders the exact Gumroad top navigation bar."""
-    st.markdown(f"""
-    <div class="gumroad-nav-wrapper">
-        <div class="gumroad-brand-group">
-            <span class="gumroad-logo">transform</span>
-            <span class="gumroad-stat-pill">⚡ 26154 ★</span>
-        </div>
-        <div class="gumroad-nav-links">
-            <span class="{'nav-pill-active' if current_view == 'Dashboard' else 'nav-link-item'}">Dashboard</span>
-            <span class="{'nav-pill-active' if current_view == 'History' else 'nav-link-item'}">History</span>
-            <span class="{'nav-pill-active' if current_view == 'Ledger' else 'nav-link-item'}">Ledger</span>
-            <span class="{'nav-pill-active' if current_view == 'About' else 'nav-link-item'}">About</span>
-        </div>
-        <div>
-            <span style="font-size: 0.88rem; font-weight: 600; color: #000000; padding: 6px 16px; background-color: #ff90e8; border: 1.5px solid #000000; border-radius: 9999px;">NTRO Secure</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    html = f"""<div class="gumroad-nav-wrapper">
+<div class="gumroad-brand-group">
+<span class="gumroad-logo">transform</span>
+<span class="gumroad-stat-pill">⚡ 26154 ★</span>
+</div>
+<div class="gumroad-nav-links">
+<span class="{'nav-pill-active' if current_view == 'Dashboard' else 'nav-link-item'}">Dashboard</span>
+<span class="{'nav-pill-active' if current_view == 'History' else 'nav-link-item'}">History</span>
+<span class="{'nav-pill-active' if current_view == 'Ledger' else 'nav-link-item'}">Ledger</span>
+<span class="{'nav-pill-active' if current_view == 'About' else 'nav-link-item'}">About</span>
+</div>
+<div>
+<span style="font-size: 0.88rem; font-weight: 700; color: #000000; padding: 7px 18px; background-color: #ff90e8; border: 1.5px solid #000000; border-radius: 9999px;">NTRO Core</span>
+</div>
+</div>"""
+    st.markdown(html, unsafe_allow_html=True)
 
 def render_hero_banner() -> None:
     """Renders the oversized Gumroad hero with floating pink coins."""
-    st.markdown("""
-    <div class="gumroad-hero-container">
-        <!-- Floating Pink Coins -->
-        <div class="floating-coin coin-1">G</div>
-        <div class="floating-coin coin-2">G</div>
-        <div class="floating-coin coin-3">G</div>
-        <div class="floating-coin coin-4">G</div>
-
-        <!-- Hero Typography -->
-        <h1 class="gumroad-hero-h1">1 Source to 5 Artefacts</h1>
-        <p class="gumroad-hero-sub">
-            Transform raw operational reports and cyber threat briefs into grounded executive summaries, 
-            tactical advisories, LinkedIn posts, X threads, and presentations with cryptographic proof.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    html = """<div class="gumroad-hero-container">
+<div class="floating-coin coin-1">G</div>
+<div class="floating-coin coin-2">G</div>
+<div class="floating-coin coin-3">G</div>
+<div class="floating-coin coin-4">G</div>
+<h1 class="gumroad-hero-h1">1 Source to 5 Artefacts</h1>
+<p class="gumroad-hero-sub">Transform raw operational reports and cyber threat briefs into grounded executive summaries, tactical advisories, LinkedIn posts, X threads, and presentations with cryptographic proof.</p>
+</div>"""
+    st.markdown(html, unsafe_allow_html=True)
 
 def render_pipeline_stepper(current_stage: int = 0) -> None:
     """Renders the 6-stage transformation pipeline stepper."""
@@ -73,12 +65,7 @@ def render_pipeline_stepper(current_stage: int = 0) -> None:
             cls = "idle"
             icon = stage["num"]
 
-        html += f"""
-        <div class="step-item {cls}">
-            <div class="step-bubble">{icon}</div>
-            <div class="step-text">{stage['name']}</div>
-        </div>
-        """
+        html += f'<div class="step-item {cls}"><div class="step-bubble">{icon}</div><div class="step-text">{stage["name"]}</div></div>'
         if i < len(stages):
             html += '<div class="step-arrow">→</div>'
 
@@ -93,45 +80,30 @@ def render_security_badges(security_report: Dict[str, Any]) -> None:
     if inj.get("has_injection_risk"):
         sigs = inj.get("signatures", [])
         matched_preview = ", ".join([f"'{s['matched_text']}'" for s in sigs[:3]])
-        st.markdown(f"""
-        <div class="alert-vermillion-box">
-            <div style="font-weight: 800; color: #dc341e; font-size: 0.95rem; margin-bottom: 0.3rem;">
-                ⚠️ Potential Prompt Injection Detected ({inj.get('risk_level')} Risk)
-            </div>
-            <div style="font-size: 0.88rem; color: #242423; margin-bottom: 0.35rem;">
-                Adversarial instructions flagged in source text: <strong>{matched_preview}</strong>
-            </div>
-            <div style="font-size: 0.82rem; color: #575756;">
-                {inj.get('mitigation_note')}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        html = f"""<div class="alert-vermillion-box">
+<div style="font-weight: 800; color: #dc341e; font-size: 0.95rem; margin-bottom: 0.3rem;">⚠️ Potential Prompt Injection Detected ({inj.get('risk_level')} Risk)</div>
+<div style="font-size: 0.88rem; color: #242423; margin-bottom: 0.35rem;">Adversarial instructions flagged in source text: <strong>{matched_preview}</strong></div>
+<div style="font-size: 0.82rem; color: #575756;">{inj.get('mitigation_note')}</div>
+</div>"""
+        st.markdown(html, unsafe_allow_html=True)
 
     if sens.get("has_sensitive_data"):
         findings = sens.get("findings_by_category", {})
         categories = list(findings.keys())
-        st.markdown(f"""
-        <div class="alert-yellow-box">
-            <div style="font-weight: 800; color: #946c00; font-size: 0.95rem; margin-bottom: 0.3rem;">
-                🔍 Sensitive Information Patterns Detected ({sens.get('total_sensitive_items')} Matches)
-            </div>
-            <div style="font-size: 0.88rem; color: #242423; margin-bottom: 0.35rem;">
-                Detected patterns: <strong>{', '.join(categories)}</strong>
-            </div>
-            <div style="font-size: 0.82rem; color: #575756;">
-                {sens.get('advisory_note')}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        html = f"""<div class="alert-yellow-box">
+<div style="font-weight: 800; color: #946c00; font-size: 0.95rem; margin-bottom: 0.3rem;">🔍 Sensitive Information Patterns Detected ({sens.get('total_sensitive_items')} Matches)</div>
+<div style="font-size: 0.88rem; color: #242423; margin-bottom: 0.35rem;">Detected patterns: <strong>{', '.join(categories)}</strong></div>
+<div style="font-size: 0.82rem; color: #575756;">{sens.get('advisory_note')}</div>
+</div>"""
+        st.markdown(html, unsafe_allow_html=True)
 
 def render_hash_badge(hash_val: str, label: str = "SHA-256 Digest") -> None:
     """Renders a formatted cryptographic hash badge."""
-    st.markdown(f"""
-    <div style="margin: 0.4rem 0;">
-        <span style="font-size: 0.8rem; color: #242423; font-weight: 700;">{label}: </span>
-        <span class="gumroad-hash">{hash_val}</span>
-    </div>
-    """, unsafe_allow_html=True)
+    html = f"""<div style="margin: 0.4rem 0;">
+<span style="font-size: 0.8rem; color: #242423; font-weight: 700;">{label}: </span>
+<span class="gumroad-hash">{hash_val}</span>
+</div>"""
+    st.markdown(html, unsafe_allow_html=True)
 
 def parse_slides_markdown(content: str) -> List[Dict[str, Any]]:
     """Parses markdown generated for slides into structured slide objects."""
@@ -207,19 +179,16 @@ def render_interactive_slide_deck(presentation_text: str, key_suffix: str = "dec
             st.rerun()
 
     slide = slides[current_idx]
-    st.markdown(f"""
-    <div class="slide-deck-box">
-        <div class="slide-deck-title">📄 {slide['title']}</div>
-        <div style="font-size: 0.98rem; color: #242423; line-height: 1.65;">
-    """, unsafe_allow_html=True)
+    st.markdown(f"""<div class="slide-deck-box">
+<div class="slide-deck-title">📄 {slide['title']}</div>
+<div style="font-size: 0.98rem; color: #242423; line-height: 1.65;">
+""", unsafe_allow_html=True)
     
     st.markdown(slide['body'])
     
-    st.markdown(f"""
-        </div>
-        <div class="slide-deck-notes">
-            <strong style="color: #000000; font-weight: 800;">🎙️ Presenter Notes:</strong><br>
-            {slide['notes']}
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f"""</div>
+<div class="slide-deck-notes">
+<strong style="color: #000000; font-weight: 800;">🎙️ Presenter Notes:</strong><br>
+{slide['notes']}
+</div>
+</div>""", unsafe_allow_html=True)
