@@ -40,7 +40,7 @@ def render_hero_banner() -> None:
 <span class="project-sticker sticker-lime">⛓️ Blockchain Ledger</span>
 </div>
 <h1 class="gumroad-hero-h1">1 Source to 5 Artefacts</h1>
-<p class="gumroad-hero-sub">Transform raw operational briefs and cyber reports into grounded executive summaries, advisories, social threads, and presentations with cryptographic proof.</p>
+<p class="gumroad-hero-sub" style="text-align: center !important; width: 100%; display: block;">Transform raw operational briefs and cyber reports into grounded executive summaries, advisories, social threads, and presentations with cryptographic proof.</p>
 <div class="artefact-pills-row">
 <span class="artefact-pill">📋 Executive Summary</span>
 <span class="artefact-pill">🚨 Cybersecurity Advisory</span>
