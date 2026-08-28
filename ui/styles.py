@@ -28,7 +28,7 @@ def get_custom_css() -> str:
         --font-mono: 'JetBrains Mono', monospace;
     }
 
-    /* Hide default Streamlit header bar & footer for a pure clean website look */
+    /* Hide default Streamlit header bar & footer */
     header[data-testid="stHeader"] {
         display: none !important;
     }
@@ -46,14 +46,14 @@ def get_custom_css() -> str:
     }
 
     .block-container {
-        max-width: 1240px !important;
-        padding-top: 1rem !important;
+        max-width: 1260px !important;
+        padding-top: 0.5rem !important;
         padding-bottom: 4rem !important;
         padding-left: 2rem !important;
         padding-right: 2rem !important;
     }
 
-    /* Hide default sidebar arrow decoration or style cleanly */
+    /* Sidebar */
     [data-testid="stSidebar"] {
         background-color: #ecece8 !important;
         border-right: 1px solid var(--hairline) !important;
@@ -63,8 +63,8 @@ def get_custom_css() -> str:
     .gumroad-nav-wrapper {
         background-color: var(--canvas-cream);
         border-bottom: 1px solid var(--hairline);
-        padding: 1rem 0;
-        margin-bottom: 2rem;
+        padding: 0.9rem 0;
+        margin-bottom: 1.5rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -77,16 +77,16 @@ def get_custom_css() -> str:
     }
 
     .gumroad-logo {
-        font-size: 1.65rem;
+        font-size: 1.75rem;
         font-weight: 900;
         color: var(--ink-black);
-        letter-spacing: -0.04em;
+        letter-spacing: -0.045em;
         text-decoration: none;
     }
 
     .gumroad-stat-pill {
         background-color: var(--paper-white);
-        border: 1px solid var(--ink-black);
+        border: 1.5px solid var(--ink-black);
         color: var(--ink-black);
         padding: 3px 10px;
         border-radius: 9999px;
@@ -101,22 +101,22 @@ def get_custom_css() -> str:
     .gumroad-nav-links {
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 18px;
     }
 
     .nav-pill-active {
         background-color: var(--ink-black);
         color: #ffffff !important;
-        padding: 6px 14px;
+        padding: 7px 16px;
         border-radius: 9999px;
-        font-size: 0.88rem;
-        font-weight: 600;
+        font-size: 0.9rem;
+        font-weight: 700;
         text-decoration: none;
     }
 
     .nav-link-item {
         color: var(--graphite);
-        font-size: 0.88rem;
+        font-size: 0.9rem;
         font-weight: 500;
         text-decoration: none;
         padding: 6px 10px;
@@ -126,12 +126,16 @@ def get_custom_css() -> str:
     .gumroad-hero-container {
         position: relative;
         text-align: center;
-        padding: 3.5rem 1rem 2.5rem 1rem;
-        margin-bottom: 2.5rem;
-        overflow: hidden;
+        padding: 2.5rem 1rem 2.5rem 1rem;
+        margin-bottom: 2rem;
+        min-height: 230px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
-    /* Floating Pink Coins */
+    /* Floating Pink Coins - Positioned away from text center */
     .floating-coin {
         position: absolute;
         background-color: var(--coin-pink);
@@ -149,59 +153,59 @@ def get_custom_css() -> str:
     }
 
     .coin-1 {
-        width: 105px;
-        height: 85px;
-        top: 10px;
-        left: 2%;
-        transform: rotate(-25deg);
-        font-size: 2.8rem;
-    }
-
-    .coin-2 {
-        width: 130px;
-        height: 105px;
-        bottom: 20px;
-        left: 0%;
-        transform: rotate(-12deg);
-        font-size: 3.4rem;
-    }
-
-    .coin-3 {
         width: 95px;
-        height: 80px;
-        top: 15px;
-        right: 4%;
-        transform: rotate(28deg);
+        height: 75px;
+        top: 0px;
+        left: 0%;
+        transform: rotate(-25deg);
         font-size: 2.4rem;
     }
 
-    .coin-4 {
-        width: 125px;
-        height: 100px;
-        bottom: 10px;
+    .coin-2 {
+        width: 110px;
+        height: 90px;
+        bottom: 0px;
+        left: -1%;
+        transform: rotate(-12deg);
+        font-size: 2.8rem;
+    }
+
+    .coin-3 {
+        width: 85px;
+        height: 70px;
+        top: 5px;
         right: 1%;
+        transform: rotate(28deg);
+        font-size: 2.1rem;
+    }
+
+    .coin-4 {
+        width: 115px;
+        height: 90px;
+        bottom: 0px;
+        right: -1%;
         transform: rotate(18deg);
-        font-size: 3.2rem;
+        font-size: 3rem;
     }
 
     .gumroad-hero-h1 {
-        font-size: 4.2rem;
+        font-size: 4rem;
         font-weight: 900;
-        color: var(--ink-black);
-        letter-spacing: -0.045em;
-        line-height: 1.05;
-        margin: 0 auto 1.2rem auto;
-        max-width: 850px;
+        color: var(--ink-black) !important;
+        letter-spacing: -0.045em !important;
+        line-height: 1.05 !important;
+        margin: 0 auto 0.8rem auto !important;
+        max-width: 800px;
         position: relative;
         z-index: 2;
     }
 
     .gumroad-hero-sub {
-        font-size: 1.15rem;
-        color: var(--graphite);
-        max-width: 660px;
-        line-height: 1.55;
-        margin: 0 auto 1.75rem auto;
+        font-size: 1.1rem;
+        color: var(--graphite) !important;
+        max-width: 620px;
+        line-height: 1.5;
+        margin: 0 auto;
         position: relative;
         z-index: 2;
     }
@@ -219,7 +223,7 @@ def get_custom_css() -> str:
     .gumroad-box-title {
         font-size: 1.35rem;
         font-weight: 800;
-        color: var(--ink-black);
+        color: var(--ink-black) !important;
         letter-spacing: -0.03em;
         margin-bottom: 1.2rem;
         display: flex;
@@ -242,7 +246,7 @@ def get_custom_css() -> str:
     .stButton > button[kind="primary"], button[data-testid="baseButton-primary"] {
         background-color: var(--ink-black) !important;
         color: #ffffff !important;
-        border: 1px solid var(--ink-black) !important;
+        border: 1.5px solid var(--ink-black) !important;
         box-shadow: 2px 2px 0px rgba(0,0,0,0.15) !important;
     }
 
@@ -307,7 +311,7 @@ def get_custom_css() -> str:
     .step-text {
         font-size: 0.78rem;
         font-weight: 700;
-        color: var(--ink-black);
+        color: var(--ink-black) !important;
         letter-spacing: -0.01em;
     }
 
@@ -354,7 +358,7 @@ def get_custom_css() -> str:
     .gumroad-hash {
         background-color: var(--canvas-cream);
         border: 1px solid var(--hairline);
-        color: var(--ink-black);
+        color: var(--ink-black) !important;
         padding: 0.35rem 0.65rem;
         border-radius: 4px;
         font-family: var(--font-mono);
@@ -399,7 +403,7 @@ def get_custom_css() -> str:
     .slide-deck-title {
         font-size: 1.45rem;
         font-weight: 800;
-        color: var(--ink-black);
+        color: var(--ink-black) !important;
         letter-spacing: -0.03em;
         margin-bottom: 1rem;
     }
@@ -411,7 +415,7 @@ def get_custom_css() -> str:
         padding: 1rem 1.25rem;
         margin-top: 1.5rem;
         font-size: 0.9rem;
-        color: var(--graphite);
+        color: var(--graphite) !important;
     }
     </style>
     """
