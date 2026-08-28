@@ -126,9 +126,9 @@ def get_custom_css() -> str:
     .gumroad-hero-container {
         position: relative;
         text-align: center;
-        padding: 2.5rem 1rem 2.5rem 1rem;
+        padding: 3rem 2rem 2.5rem 2rem;
         margin-bottom: 2rem;
-        min-height: 230px;
+        min-height: 250px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -153,61 +153,61 @@ def get_custom_css() -> str:
     }
 
     .coin-1 {
-        width: 95px;
-        height: 75px;
-        top: 0px;
-        left: 0%;
+        width: 90px;
+        height: 72px;
+        top: -5px;
+        left: -20px;
         transform: rotate(-25deg);
-        font-size: 2.4rem;
+        font-size: 2.2rem;
     }
 
     .coin-2 {
-        width: 110px;
-        height: 90px;
-        bottom: 0px;
-        left: -1%;
+        width: 105px;
+        height: 85px;
+        bottom: -15px;
+        left: -35px;
         transform: rotate(-12deg);
-        font-size: 2.8rem;
+        font-size: 2.6rem;
     }
 
     .coin-3 {
-        width: 85px;
-        height: 70px;
-        top: 5px;
-        right: 1%;
+        width: 80px;
+        height: 65px;
+        top: 0px;
+        right: -15px;
         transform: rotate(28deg);
-        font-size: 2.1rem;
+        font-size: 2rem;
     }
 
     .coin-4 {
-        width: 115px;
-        height: 90px;
-        bottom: 0px;
-        right: -1%;
+        width: 110px;
+        height: 88px;
+        bottom: -15px;
+        right: -30px;
         transform: rotate(18deg);
-        font-size: 3rem;
+        font-size: 2.8rem;
     }
 
     .gumroad-hero-h1 {
-        font-size: 4rem;
+        font-size: 4.2rem;
         font-weight: 900;
         color: var(--ink-black) !important;
         letter-spacing: -0.045em !important;
         line-height: 1.05 !important;
         margin: 0 auto 0.8rem auto !important;
-        max-width: 800px;
+        max-width: 780px;
         position: relative;
-        z-index: 2;
+        z-index: 3;
     }
 
     .gumroad-hero-sub {
-        font-size: 1.1rem;
+        font-size: 1.12rem;
         color: var(--graphite) !important;
-        max-width: 620px;
-        line-height: 1.5;
+        max-width: 560px;
+        line-height: 1.55;
         margin: 0 auto;
         position: relative;
-        z-index: 2;
+        z-index: 3;
     }
 
     /* Flat White Cards */
