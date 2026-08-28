@@ -52,9 +52,28 @@ def get_custom_css() -> str:
         --radius-btn:   4px;
     }
 
-    /* === RESET & BASE === */
-    header[data-testid="stHeader"] { display: none !important; }
-    footer { display: none !important; }
+    /* Hide Streamlit default toolbar elements but KEEP sidebar toggle */
+    header[data-testid="stHeader"] {
+        background: transparent !important;
+        height: 0 !important;
+        min-height: 0 !important;
+    }
+
+    /* Hide deploy button and the toolbar items but NOT the sidebar toggle */
+    header[data-testid="stHeader"] [data-testid="stToolbar"],
+    header[data-testid="stHeader"] .stDeployButton,
+    #MainMenu,
+    footer {
+        display: none !important;
+    }
+
+    /* Always show sidebar collapse/expand toggle */
+    button[data-testid="collapsedControl"],
+    [data-testid="collapsedControl"] {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
 
     html, body, .stApp, [data-testid="stAppViewContainer"], .main {
         background-color: var(--color-canvas-cream) !important;
