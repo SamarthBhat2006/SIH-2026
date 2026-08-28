@@ -152,6 +152,18 @@ def get_custom_css() -> str:
         text-align: center;
         padding: var(--spacing-48) var(--spacing-24) var(--spacing-40);
         margin-bottom: var(--spacing-32);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Force Streamlit's own markdown wrapper divs to honor centering inside the hero */
+    .gumroad-hero-container div[data-testid="stMarkdownContainer"],
+    .gumroad-hero-container > div,
+    .gumroad-hero-container p {
+        text-align: center !important;
+        width: 100% !important;
+        max-width: 580px;
     }
 
     /* Badge row — project stickers above headline */
@@ -198,9 +210,11 @@ def get_custom_css() -> str:
         color: var(--color-graphite) !important;
         letter-spacing: -0.108px;
         line-height: 1.56;
+        width: 100% !important;
         max-width: 580px;
-        margin: 0 auto var(--spacing-24);
+        margin: 0 auto var(--spacing-24) auto;
         text-align: center !important;
+        display: block !important;
     }
 
     /* Artefact pill tags below subtitle */
