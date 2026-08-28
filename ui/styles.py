@@ -200,6 +200,7 @@ def get_custom_css() -> str:
         line-height: 1.56;
         max-width: 580px;
         margin: 0 auto var(--spacing-24);
+        text-align: center !important;
     }
 
     /* Artefact pill tags below subtitle */
