@@ -164,7 +164,9 @@ def get_custom_css() -> str:
     .gumroad-hero-container p {
         text-align: center !important;
         width: 100% !important;
-        max-width: 580px;
+        max-width: none !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 
     /* Badge row — project stickers above headline */
