@@ -52,28 +52,10 @@ def get_custom_css() -> str:
         --radius-btn:   4px;
     }
 
-    /* Hide Streamlit default toolbar elements but KEEP sidebar toggle */
-    header[data-testid="stHeader"] {
-        background: transparent !important;
-        height: 0 !important;
-        min-height: 0 !important;
-    }
-
-    /* Hide deploy button and the toolbar items but NOT the sidebar toggle */
-    header[data-testid="stHeader"] [data-testid="stToolbar"],
-    header[data-testid="stHeader"] .stDeployButton,
-    #MainMenu,
-    footer {
-        display: none !important;
-    }
-
-    /* Always show sidebar collapse/expand toggle */
-    button[data-testid="collapsedControl"],
-    [data-testid="collapsedControl"] {
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
+    /* Hide Streamlit toolbar noise */
+    header[data-testid="stHeader"] { display: none !important; }
+    #MainMenu { display: none !important; }
+    footer { display: none !important; }
 
     html, body, .stApp, [data-testid="stAppViewContainer"], .main {
         background-color: var(--color-canvas-cream) !important;
@@ -94,10 +76,21 @@ def get_custom_css() -> str:
         padding-right: var(--spacing-32) !important;
     }
 
-    /* === SIDEBAR === */
+    /* === SIDEBAR — always locked open, no collapse button === */
     [data-testid="stSidebar"] {
-        background-color: #ebebе7 !important;
+        background-color: #ecece8 !important;
         border-right: 1px solid var(--color-hairline) !important;
+        min-width: 244px !important;
+        max-width: 244px !important;
+        transform: none !important;
+        visibility: visible !important;
+        display: block !important;
+    }
+
+    /* Hide the sidebar collapse button so it can never be accidentally closed */
+    [data-testid="stSidebarCollapseButton"],
+    button[data-testid="collapsedControl"] {
+        display: none !important;
     }
 
     /* === TOP NAV BAR === */
