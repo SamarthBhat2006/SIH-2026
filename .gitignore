@@ -13,8 +13,8 @@ venv/
 env/
 .venv/
 
-# Streamlit config
-.streamlit/
+# Streamlit secrets
+.streamlit/secrets.toml
 
 # OS specific
 .DS_Store
