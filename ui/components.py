@@ -1,8 +1,8 @@
 """
 UI Components Module
-Renders authentic Gumroad UI elements with precise HTML rendering (zero markdown indentation issues):
+Renders authentic Gumroad UI elements customized for the NTRO Transformation Platform:
 - Top Navigation Bar with Logo, Stat Badge, Nav links, and Action Button.
-- Hero Banner with oversized typography and floating hot-pink coins.
+- Hero Banner with oversized typography and project-themed sticker badges.
 - Pipeline stepper, security alerts, and slide deck viewer.
 """
 
@@ -31,14 +31,23 @@ def render_top_navbar(current_view: str = "Dashboard") -> None:
     st.markdown(html, unsafe_allow_html=True)
 
 def render_hero_banner() -> None:
-    """Renders the oversized Gumroad hero with floating pink coins."""
+    """Renders the clean Gumroad hero banner with project-relevant sticker badges."""
     html = """<div class="gumroad-hero-container">
-<div class="floating-coin coin-1">G</div>
-<div class="floating-coin coin-2">G</div>
-<div class="floating-coin coin-3">G</div>
-<div class="floating-coin coin-4">G</div>
+<div class="hero-stickers-row">
+<span class="project-sticker sticker-pink">⚡ AI Transformation Engine</span>
+<span class="project-sticker sticker-yellow">🛡️ Threat Screening</span>
+<span class="project-sticker sticker-white">🔐 SHA-256 Hashing</span>
+<span class="project-sticker sticker-lime">⛓️ Blockchain Ledger</span>
+</div>
 <h1 class="gumroad-hero-h1">1 Source to 5 Artefacts</h1>
-<p class="gumroad-hero-sub">Transform raw operational reports and cyber threat briefs into grounded executive summaries, tactical advisories, LinkedIn posts, X threads, and presentations with cryptographic proof.</p>
+<p class="gumroad-hero-sub">Transform raw operational briefs and cyber reports into grounded executive summaries, advisories, social threads, and presentations with cryptographic proof.</p>
+<div class="artefact-pills-row">
+<span class="artefact-pill">📋 Executive Summary</span>
+<span class="artefact-pill">🚨 Cybersecurity Advisory</span>
+<span class="artefact-pill">💼 LinkedIn Post</span>
+<span class="artefact-pill">🧵 X Thread</span>
+<span class="artefact-pill">📊 Presentation Deck</span>
+</div>
 </div>"""
     st.markdown(html, unsafe_allow_html=True)
 

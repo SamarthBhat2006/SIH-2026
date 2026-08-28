@@ -1,15 +1,15 @@
 """
 UI Design System & Authentic Gumroad Aesthetic Styles
-Faithfully replicates the exact Gumroad design:
+Customized for NTRO Content Transformation Platform:
 - Top full-width navigation bar with wordmark, badge, nav links with black active pill, and CTA button.
-- Warm cream #f4f4f0 canvas background with floating hot-pink #ff90e8 coins with black outlines.
-- Hero headline '1 Source to 5 Artefacts' with tight letter spacing.
+- Warm cream #f4f4f0 canvas background with floating project badges (AI Engine, SHA-256, Blockchain, Grounded).
+- Hero headline '1 Source to 5 Artefacts' with perfectly balanced typography and zero overlapping.
 - Flat paper-white #ffffff cards with 16-24px radii and crisp hairline borders (zero shadows/glows).
 - Solid black #000000 filled buttons (4px radius) and ghost outline buttons.
 """
 
 def get_custom_css() -> str:
-    """Returns CSS matching the exact visual style of Gumroad."""
+    """Returns refined CSS matching the authentic Gumroad aesthetic tailored to NTRO."""
     return """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
@@ -64,7 +64,7 @@ def get_custom_css() -> str:
         background-color: var(--canvas-cream);
         border-bottom: 1px solid var(--hairline);
         padding: 0.9rem 0;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -122,92 +122,96 @@ def get_custom_css() -> str:
         padding: 6px 10px;
     }
 
-    /* Hero Section with Floating Coins */
+    /* Refined Hero Section */
     .gumroad-hero-container {
-        position: relative;
         text-align: center;
-        padding: 3rem 2rem 2.5rem 2rem;
+        padding: 2.75rem 1.5rem 2.25rem 1.5rem;
         margin-bottom: 2rem;
-        min-height: 250px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        background-color: var(--canvas-cream);
+        position: relative;
     }
 
-    /* Floating Pink Coins - Positioned away from text center */
-    .floating-coin {
-        position: absolute;
+    /* Floating Project Sticker Badges */
+    .hero-stickers-row {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 1.5rem;
+    }
+
+    .project-sticker {
+        padding: 6px 14px;
+        border-radius: 9999px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1.5px solid var(--ink-black);
+        box-shadow: 2px 2px 0px var(--ink-black);
+        letter-spacing: -0.01em;
+    }
+
+    .sticker-pink {
         background-color: var(--coin-pink);
-        border: 2px solid var(--ink-black);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 900;
         color: var(--ink-black);
-        box-shadow: 3px 3px 0px var(--ink-black);
-        user-select: none;
-        pointer-events: none;
-        z-index: 1;
+        transform: rotate(-2deg);
     }
 
-    .coin-1 {
-        width: 90px;
-        height: 72px;
-        top: -5px;
-        left: -20px;
-        transform: rotate(-25deg);
-        font-size: 2.2rem;
+    .sticker-yellow {
+        background-color: var(--highlight-yellow);
+        color: var(--ink-black);
+        transform: rotate(2deg);
     }
 
-    .coin-2 {
-        width: 105px;
-        height: 85px;
-        bottom: -15px;
-        left: -35px;
-        transform: rotate(-12deg);
-        font-size: 2.6rem;
+    .sticker-white {
+        background-color: var(--paper-white);
+        color: var(--ink-black);
+        transform: rotate(-1deg);
     }
 
-    .coin-3 {
-        width: 80px;
-        height: 65px;
-        top: 0px;
-        right: -15px;
-        transform: rotate(28deg);
-        font-size: 2rem;
-    }
-
-    .coin-4 {
-        width: 110px;
-        height: 88px;
-        bottom: -15px;
-        right: -30px;
-        transform: rotate(18deg);
-        font-size: 2.8rem;
+    .sticker-lime {
+        background-color: var(--highlight-lime);
+        color: var(--ink-black);
+        transform: rotate(1.5deg);
     }
 
     .gumroad-hero-h1 {
-        font-size: 4.2rem;
+        font-size: 3.8rem;
         font-weight: 900;
         color: var(--ink-black) !important;
         letter-spacing: -0.045em !important;
-        line-height: 1.05 !important;
-        margin: 0 auto 0.8rem auto !important;
-        max-width: 780px;
-        position: relative;
-        z-index: 3;
+        line-height: 1.1 !important;
+        margin: 0 auto 1rem auto !important;
+        max-width: 800px;
     }
 
     .gumroad-hero-sub {
-        font-size: 1.12rem;
+        font-size: 1.15rem;
         color: var(--graphite) !important;
-        max-width: 560px;
-        line-height: 1.55;
-        margin: 0 auto;
-        position: relative;
-        z-index: 3;
+        max-width: 650px;
+        line-height: 1.6;
+        margin: 0 auto 1.5rem auto;
+    }
+
+    /* Artefact Tags Pill Row */
+    .artefact-pills-row {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 1rem;
+    }
+
+    .artefact-pill {
+        background-color: var(--paper-white);
+        border: 1px solid var(--hairline);
+        color: var(--graphite);
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
     }
 
     /* Flat White Cards */
