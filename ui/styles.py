@@ -52,8 +52,12 @@ def get_custom_css() -> str:
         --radius-btn:   4px;
     }
 
-    /* Hide Streamlit toolbar noise */
-    header[data-testid="stHeader"] { display: none !important; }
+    /* Streamlit toolbar & header styling */
+    header[data-testid="stHeader"] {
+        background-color: transparent !important;
+        color: var(--color-ink-black) !important;
+        z-index: 99 !important;
+    }
     #MainMenu { display: none !important; }
     footer { display: none !important; }
 
@@ -76,21 +80,28 @@ def get_custom_css() -> str:
         padding-right: var(--spacing-32) !important;
     }
 
-    /* === SIDEBAR — always locked open, no collapse button === */
+    /* === SIDEBAR — collapsible with clean styling === */
     [data-testid="stSidebar"] {
         background-color: #ecece8 !important;
         border-right: 1px solid var(--color-hairline) !important;
-        min-width: 244px !important;
-        max-width: 244px !important;
-        transform: none !important;
-        visibility: visible !important;
-        display: block !important;
     }
 
-    /* Hide the sidebar collapse button so it can never be accidentally closed */
+    /* Keep collapse/expand button visible and styled cleanly */
     [data-testid="stSidebarCollapseButton"],
+    button[data-testid="collapsedControl"],
+    [data-testid="stSidebarUserContent"] button {
+        color: var(--color-ink-black) !important;
+    }
+
     button[data-testid="collapsedControl"] {
-        display: none !important;
+        display: flex !important;
+        visibility: visible !important;
+        background-color: var(--color-paper-white) !important;
+        border: 1.5px solid var(--color-ink-black) !important;
+        border-radius: 6px !important;
+        box-shadow: 2px 2px 0 var(--color-ink-black) !important;
+        margin: 8px 12px !important;
+        z-index: 100 !important;
     }
 
     /* === TOP NAV BAR === */
@@ -100,8 +111,8 @@ def get_custom_css() -> str:
         align-items: center;
         background-color: var(--color-canvas-cream);
         border-bottom: 1px solid var(--color-hairline);
-        padding: var(--spacing-16) 0;
-        margin-bottom: var(--spacing-32);
+        padding: var(--spacing-12) 0;
+        margin-bottom: var(--spacing-24);
     }
 
     .gumroad-brand-group {
@@ -140,23 +151,38 @@ def get_custom_css() -> str:
     }
 
     .nav-pill-active {
-        background-color: var(--color-ink-black);
+        background-color: var(--color-ink-black) !important;
         color: var(--color-paper-white) !important;
-        padding: 6px 16px;
-        border-radius: 9999px;
-        font-size: var(--text-body-sm);
-        font-weight: 500;
-        letter-spacing: -0.02em;
-        cursor: default;
+        padding: 6px 16px !important;
+        border-radius: 9999px !important;
+        font-size: var(--text-body-sm) !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.02em !important;
+        border: 1.5px solid var(--color-ink-black) !important;
+        cursor: pointer;
     }
 
     .nav-link-item {
-        color: var(--color-graphite);
-        font-size: var(--text-body-sm);
-        font-weight: 500;
-        letter-spacing: -0.02em;
-        padding: 6px 10px;
+        background-color: var(--color-paper-white) !important;
+        color: var(--color-graphite) !important;
+        font-size: var(--text-body-sm) !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.02em !important;
+        padding: 6px 14px !important;
+        border-radius: 9999px !important;
+        border: 1px solid var(--color-hairline) !important;
         cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .nav-link-item:hover {
+        border-color: var(--color-ink-black) !important;
+        color: var(--color-ink-black) !important;
+    }
+
+    /* Top navbar button container */
+    div[data-testid="stHorizontalBlock"]:has(.top-nav-btn) {
+        align-items: center !important;
     }
 
     /* === HERO SECTION === */

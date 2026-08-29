@@ -12,23 +12,42 @@ import streamlit as st
 from typing import Dict, List, Any, Optional
 
 def render_top_navbar(current_view: str = "Dashboard") -> None:
-    """Renders the exact Gumroad top navigation bar."""
-    html = f"""<div class="gumroad-nav-wrapper">
-<div class="gumroad-brand-group">
-<span class="gumroad-logo">transform</span>
-<span class="gumroad-stat-pill">⚡ 26154 ★</span>
-</div>
-<div class="gumroad-nav-links">
-<span class="{'nav-pill-active' if current_view == 'Dashboard' else 'nav-link-item'}">Dashboard</span>
-<span class="{'nav-pill-active' if current_view == 'History' else 'nav-link-item'}">History</span>
-<span class="{'nav-pill-active' if current_view == 'Ledger' else 'nav-link-item'}">Ledger</span>
-<span class="{'nav-pill-active' if current_view == 'About' else 'nav-link-item'}">About</span>
-</div>
-<div>
-<span style="font-size: 0.88rem; font-weight: 700; color: #000000; padding: 7px 18px; background-color: #ff90e8; border: 1.5px solid #000000; border-radius: 9999px;">NTRO Core</span>
-</div>
-</div>"""
-    st.markdown(html, unsafe_allow_html=True)
+    """Renders an interactive top navigation bar with brand, active nav buttons, and NTRO Core badge."""
+    col_brand, col_nav, col_badge = st.columns([2.4, 5.2, 1.8])
+
+    with col_brand:
+        st.markdown("""
+        <div class="gumroad-brand-group" style="padding-top: 4px;">
+            <span class="gumroad-logo">transform</span>
+            <span class="gumroad-stat-pill">⚡ 26154 ★</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col_nav:
+        nav_cols = st.columns(4)
+        nav_items = ["Dashboard", "History", "Ledger", "About"]
+        for idx, item in enumerate(nav_items):
+            with nav_cols[idx]:
+                is_active = (current_view == item)
+                btn_type = "primary" if is_active else "secondary"
+                if st.button(
+                    item,
+                    key=f"top_nav_{item.lower()}",
+                    type=btn_type,
+                    use_container_width=True
+                ):
+                    if st.session_state.get("nav_choice") != item:
+                        st.session_state.nav_choice = item
+                        st.rerun()
+
+    with col_badge:
+        st.markdown("""
+        <div style="text-align: right; padding-top: 5px;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: #000000; padding: 7px 16px; background-color: #ff90e8; border: 1.5px solid #000000; border-radius: 9999px; display: inline-block;">NTRO Core</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 0.75rem 0 1.75rem 0;'>", unsafe_allow_html=True)
 
 def render_hero_banner() -> None:
     """Renders the clean Gumroad hero banner with project-relevant sticker badges."""
@@ -116,40 +135,42 @@ def render_hash_badge(hash_val: str, label: str = "SHA-256 Digest") -> None:
 
 def parse_slides_markdown(content: str) -> List[Dict[str, Any]]:
     """Parses markdown generated for slides into structured slide objects."""
-    slide_blocks = re.split(r"(?:^|\n)---+(?:\n|$)|(?:^|\n)##\s+SLIDE\s+\d+:\s*", content)
+    slide_blocks = re.split(r"(?:^|\n)---+(?:\n|$)|(?:^|\n)##\s+SLIDE\s+\d+[\s:—–-]+", content)
     slides = []
-    
+
     for block in slide_blocks:
         clean = block.strip()
         if not clean:
             continue
-            
+
         lines = clean.split("\n")
-        title = lines[0].replace("##", "").replace("SLIDE", "").strip()
-        if title.startswith(":") or title.startswith("-"):
-            title = title[1:].strip()
-        if not title:
-            title = "Presentation Slide"
+        raw_title = lines[0].replace("##", "").replace("SLIDE", "").strip()
+        # Clean leading numbers, colons, or dashes from slide title
+        raw_title = re.sub(r"^\d+[\s:—–-]+", "", raw_title).strip()
+        if raw_title.startswith(":") or raw_title.startswith("-") or raw_title.startswith("—"):
+            raw_title = raw_title[1:].strip()
+        if not raw_title:
+            raw_title = "Presentation Slide"
 
         notes = "No speaker notes provided."
         body_lines = []
         in_notes = False
         notes_lines = []
-        
+
         for line in lines[1:]:
-            if "speaker notes:" in line.lower() or "**speaker notes:**" in line.lower():
+            if "speaker notes:" in line.lower() or "**speaker notes:**" in line.lower() or "speaker notes" in line.lower():
                 in_notes = True
                 continue
             if in_notes:
                 notes_lines.append(line)
             else:
                 body_lines.append(line)
-                
+
         if notes_lines:
             notes = "\n".join(notes_lines).strip()
-            
+
         slides.append({
-            "title": title,
+            "title": raw_title,
             "body": "\n".join(body_lines).strip(),
             "notes": notes
         })

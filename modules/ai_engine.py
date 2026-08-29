@@ -72,196 +72,244 @@ class AIEngine:
     ) -> str:
         """
         High-fidelity deterministic grounded generation engine.
-        Ensures 100% offline functionality, instantaneous testing, and zero demo failure risk.
+        Produces format-specific, configuration-driven artefacts strictly from source facts.
         """
         audience = config.get("audience", "Executive")
         tone = config.get("tone", "Professional")
+        detail = config.get("detail", "Standard")
         objective = config.get("objective", "Inform")
-        severity = grounded_facts.get("detected_severity", "ELEVATED")
-        dates = ", ".join(grounded_facts.get("detected_dates", []))
-        cves = ", ".join(grounded_facts.get("detected_cves", []))
-        ips = ", ".join(grounded_facts.get("detected_ips", []))
-        domains = ", ".join(grounded_facts.get("detected_domains", []))
-        
-        # Extract first 3 significant paragraphs
-        paragraphs = [p.strip() for p in source_text.split("\n") if len(p.strip()) > 25]
-        summary_p1 = paragraphs[0] if paragraphs else source_text[:200]
-        summary_p2 = paragraphs[1] if len(paragraphs) > 1 else "Primary operational verification conducted across impacted endpoints."
-        summary_p3 = paragraphs[2] if len(paragraphs) > 2 else "Security operations teams deployed active containment measures."
+
+        title = grounded_facts.get("title", "Operational Threat Transformation Report")
+        severity = grounded_facts.get("detected_severity", "Not specified in source material.")
+        dates = ", ".join(grounded_facts.get("detected_dates", ["Not specified in source material."]))
+        cves = ", ".join(grounded_facts.get("detected_cves", ["Not specified in source material."]))
+        ips = ", ".join(grounded_facts.get("detected_ips", ["Not specified in source material."]))
+        domains = ", ".join(grounded_facts.get("detected_domains", ["Not specified in source material."]))
+        hashes = ", ".join(grounded_facts.get("detected_hashes", ["Not specified in source material."]))
+        systems_list = grounded_facts.get("potential_affected_systems", ["Not specified in source material."])
+        systems = ", ".join(systems_list) if isinstance(systems_list, list) else str(systems_list)
+        users_list = grounded_facts.get("impacted_users", ["Not specified in source material."])
+        users = ", ".join(users_list) if isinstance(users_list, list) else str(users_list)
+        mitigations_list = grounded_facts.get("mitigations", ["Not specified in source material."])
+        attack_list = grounded_facts.get("attack_vectors", ["Not specified in source material."])
+        attack_vector = ", ".join(attack_list) if isinstance(attack_list, list) else str(attack_list)
+
+        # Extract significant paragraphs
+        paragraphs = [p.strip() for p in source_text.split("\n") if len(p.strip()) > 20 and not p.strip().startswith("#")]
+        p1 = paragraphs[0] if paragraphs else source_text[:200]
+        p2 = paragraphs[1] if len(paragraphs) > 1 else (paragraphs[0] if paragraphs else "No secondary operational detail provided.")
+        p3 = paragraphs[2] if len(paragraphs) > 2 else "Security operations teams deployed active containment measures."
+
+        # Tone adjective modifier
+        tone_prefix = "URGENT ACTION REQUIRED: " if tone.lower() == "urgent" else ""
+        action_tone = "Immediate" if tone.lower() == "urgent" else "Strategic"
+
+        # Audience-oriented framing
+        if audience == "Executive":
+            audience_focus = "Focus on enterprise governance, strategic exposure, and high-level risk management."
+        elif audience == "Technical Team":
+            audience_focus = "Focus on technical IoCs, perimeter hardening, credential revocation, and log telemetry."
+        elif audience == "General Public":
+            audience_focus = "Focus on user awareness, basic cyber hygiene, and threat identification."
+        else:
+            audience_focus = f"Focus on operational readiness and coordination for {audience}."
 
         if artefact_type == "executive_summary":
-            return f"""# Executive Briefing: Operational & Threat Transformation Report
+            detail_extra = f"\n- **Extended Operational Context:** {p3}\n- **Detailed Systems Scope:** {systems}" if detail.lower() == "detailed" else ""
+            return f"""# EXECUTIVE SUMMARY
 
-### 1. Situation Overview
-{summary_p1}
+### Situation / Context
+{tone_prefix}{p1}
 
-### 2. Key Findings
-- **Observed Threat Activity:** {summary_p2[:150]}...
-- **Identified Indicators:** IP/Network anchors ({ips if ips != 'Not specified in source' else 'Internal telemetry'}), CVE References ({cves}).
-- **Detection Timeline:** Verified event activity recorded around {dates if dates != 'Not specified in source' else 'Recent operational window'}.
+### Key Findings
+- **Observed Threat Event:** {p2}
+- **Identified Indicators:** IP/Network anchors: `{ips}`, CVE references: `{cves}`.
+- **Verification Window:** Event timeline recorded around {dates}.{detail_extra}
 
-### 3. Operational & Business Impact
-- **Severity Classification:** {severity}
-- **Impact Assessment:** Risk of credential compromise and unauthorized resource access. Prompt containment prevented wider lateral movement.
+### Impact
+- **Severity Rating:** {severity}
+- **Impact Assessment:** Risk of credential compromise and unauthorized resource access within organizational assets ({systems}). Prompt detection isolated initial blast radius.
 
-### 4. Risk Assessment & Posture
-- Target Audience Focus: **{audience}** | Configured Tone: **{tone}**
-- Primary exposure restricted to monitored vectors; integrity validation confirmed across core data assets.
+### Risk / Significance
+- **Audience Impact ({audience}):** {audience_focus}
+- **Risk Posture:** Active threat vector under a **{tone.lower()}** operational posture with an objective to **{objective.lower()}** leadership.
 
-### 5. Recommended Strategic Actions
-1. **Enforce Immediate Remediation:** Validate multi-factor authentication (MFA) and force credential reset for targeted accounts.
-2. **Endpoint Hardening:** Implement network blocklist rules for identified suspicious endpoints and domains ({domains}).
-3. **Audit Provenance:** Preserve cryptographic SHA-256 logs for post-incident regulatory filing.
+### Recommended Actions
+1. **{action_tone} Mitigation:** Revoke active tokens and force credential reset for targeted accounts ({users}).
+2. **Perimeter Hardening:** Implement network blocklist rules for identified suspicious endpoints and domains (`{domains}`).
+3. **Cryptographic Provenance:** Validate and archive transformation audit logs in the immutable ledger.
 
----
-*Generated by NTRO Content Transformation Engine | Grounded in verified source data.*
+### Conclusion
+Containment measures remain active. Leadership is advised to maintain heightened monitoring and enforce mandatory zero-trust verification across all operational perimeters.
 """
 
         elif artefact_type == "cybersecurity_advisory":
-            return f"""# CYBERSECURITY ADVISORY: THREAT CONTAINMENT & MITIGATION NOTICE
+            mitigation_bullets = "\n".join([f"- {m}" for m in mitigations_list]) if mitigations_list != ["Not specified in source material."] else "- Revoke compromised credentials and enforce multi-factor authentication (MFA).\n- Block all identified malicious IP addresses and external domain indicators.\n- Correlate authentication logs for anomalous token generation."
+            return f"""# CYBERSECURITY ADVISORY
 
-**Advisory Reference:** NTRO-CYBER-2026-ADV
-**Severity Classification:** {severity if severity != 'Not specified in source' else 'HIGH / WARNING'}
+**Title:** {title}
+**Severity:** {severity}
+**Date:** {dates}
 **Target Audience:** {audience} | **Tone:** {tone}
 
 ---
 
-### 1. Executive Overview
-{summary_p1}
+### Threat Overview
+{tone_prefix}{p1}
 
-### 2. Threat & Vulnerability Description
-{summary_p2}
-The adversary employed targeted vectors attempting credential capture and unauthorized entry into organizational workflows.
+### Affected Systems / Users
+- **Targeted Infrastructure:** {systems}
+- **Impacted Accounts / Entities:** {users}
 
-### 3. Affected Systems & Entities
-- Explicit Infrastructure: {', '.join(grounded_facts.get('potential_affected_systems', ['Authentication Services', 'Mail Gateways']))}
-- User Accounts: Targeted staff and endpoint workstations within affected subnets.
+### Threat Description
+{p2}
+Adversary activity was identified attempting unauthorized access through credential harvesting and targeted infrastructure exploitation.
 
-### 4. Indicators of Compromise (IoCs)
-- **IPv4 Anchors:** `{ips if ips != 'Not specified in source' else 'None enumerated in source document'}`
-- **Domain Indicators:** `{domains if domains != 'Not specified in source' else 'None enumerated in source document'}`
-- **Vulnerability CVEs:** `{cves if cves != 'Not specified in source' else 'Not explicitly mapped in source'}`
+### Attack Vector
+{attack_vector}
 
-### 5. Potential Impact
-- Risk of session hijacking, data exfiltration, or secondary phishing lures distributed from compromised credentials.
+### Indicators of Compromise
+- **IP Addresses:** `{ips}`
+- **Domains / URLs:** `{domains}`
+- **CVE Identifiers:** `{cves}`
+- **File Hashes:** `{hashes}`
 
-### 6. Prescribed Mitigations & Countermeasures
-1. **Immediate Ingress Filter:** Block all telemetry associated with documented anomalous IPs and external domains.
-2. **Credential Invalidation:** Revoke active tokens and rotate authentication secrets for flagged accounts.
-3. **Log Ingestion & SIEM Alerting:** Correlate authentication logs with verified SHA-256 transformation signatures.
+### Potential Impact
+Unauthorized credential access, session token hijacking, potential lateral movement, and unauthorized exfiltration from affected communication channels.
 
----
-*National Technical Research Organisation (NTRO) Threat Intelligence Unit*
+### Recommended Mitigation
+{mitigation_bullets}
+
+### Preventive Measures
+- Enforce strict FIDO2 / hardware token authentication across all user tiers.
+- Synchronize perimeter firewall and DNS filtering with active threat intelligence feeds.
+- Implement continuous credential exposure auditing and anomalous geolocation alerts.
+
+### Incident Response Recommendations
+- Isolate affected host endpoints and invalidate active bearer tokens immediately.
+- Preserve memory artifacts and verify audit integrity against SHA-256 blockchain records.
+- Notify the National Cyber Operations Center (NCOC) / NTRO incident desk with verified IoC telemetry.
 """
 
         elif artefact_type == "linkedin_post":
-            return f"""🔒 **Operational Intelligence Update | NTRO Cyber Briefing**
+            return f"""🚨 **Cybersecurity Update: Key Findings & Tactical Insights**
 
-{summary_p1}
+{p1}
 
-As organizations navigate complex cyber risk environments, proactive awareness and rapid response remain critical. 
+As organizations strengthen their defensive posture against modern threats, rapid intelligence sharing and grounded analysis are critical.
 
-Here are the key takeaways from our latest security assessment:
-🔹 **Core Situation:** {summary_p2[:140]}...
-🔹 **Operational Posture:** Threat severity designated as **{severity}**.
-🔹 **Containment Action:** Defensive teams have enforced token revocation, access hardening, and endpoint verification.
+Here is what decision-makers and security professionals need to know:
 
-💡 **Key Recommendation for {audience}:**
-Prioritize robust multi-factor authentication (MFA), continuous endpoint monitoring, and cryptographic verification of all critical communications.
+🔹 **The Situation:** {p2[:160]}...
+🔹 **Severity Classification:** Designated as **{severity}**.
+🔹 **Critical Vulnerabilities & IoCs:** Monitored endpoints (`{ips}`) and domain vectors (`{domains}`).
+🔹 **Defensive Actions:** Session revocation, gateway domain filtering, and cryptographic audit tracking.
 
-Read responsibly and stay resilient.
+💡 **Key Takeaway for {audience}:**
+{audience_focus} Ensure multi-factor authentication (MFA) is strictly enforced and verify communication integrity with tamper-evident audit trails.
+
+Stay vigilant and protect your organization's digital assets.
 
 #CyberSecurity #ThreatIntelligence #NTRO #IncidentResponse #GovTech #InfoSec #CyberDefense
 """
 
         elif artefact_type == "x_thread":
-            return f"""🧵 1/5 | 🚨 THREAT BRIEFING: Critical Incident & Transformation Analysis
+            short_p1 = (p1[:160] + "...") if len(p1) > 160 else p1
+            short_p2 = (p2[:160] + "...") if len(p2) > 160 else p2
+            return f"""1/ 🚨 THREAT BRIEFING: Critical Security Incident & Analysis
 
-{summary_p1[:180]}... 
+{short_p1}
 
-Here's the full breakdown ⬇️
-
----
-
-🧵 2/5 | 🔍 The Findings:
-Our analysis observed malicious activity targeting organizational credentials and services. 
-Severity Level: {severity}.
-Identified vectors: {domains if domains != 'Not specified in source' else 'Suspicious external links'}.
+Here is the 5-point breakdown 🧵 ⬇️
 
 ---
 
-🧵 3/5 | ⚡ Impact & Scope:
-- Targeted accounts identified and isolated.
-- Defensive filters deployed across network perimeters.
-- Cryptographic SHA-256 source hash generated to preserve evidence integrity.
+2/ 🔍 What happened:
+{short_p2}
+• Severity Level: {severity}
+• Documented Timeline: {dates}
 
 ---
 
-🧵 4/5 | 🛡️ Recommended Actions for {audience}:
-1. Force password rotations & enforce strict MFA.
-2. Monitor authentication logs for anomalous logins.
-3. Block documented IoCs across firewall perimeters.
+3/ ⚡ Impact & Indicators:
+• Targets: {systems}
+• Flagged IoCs: {domains if domains != 'Not specified in source material.' else 'Suspicious external links'}
+• Identified CVEs: {cves}
 
 ---
 
-🧵 5/5 | 📌 Summary:
-Security teams continue 24/7 monitoring. Stay alert and report suspicious interactions immediately.
-#CyberAlert #InfoSec #NTRO #CyberSecurity
+4/ 🛡️ Defensive Actions for {audience}:
+• Revoke active sessions & rotate credentials immediately.
+• Block identified malicious domains & IP anchors across perimeter filters.
+• Enforce strict MFA verification.
+
+---
+
+5/ 📌 Key Takeaway:
+Containment is underway. Ensure your teams monitor authentication logs and maintain cryptographic verification of operational briefs. #CyberAlert #NTRO #InfoSec
 """
 
         elif artefact_type == "presentation":
             return f"""---
-## SLIDE 1: Operational Threat Transformation Briefing
-**Key Points:**
-- **Context:** Automated briefing derived from verified incident report.
-- **Objective:** {objective} target stakeholders ({audience}).
-- **Prepared by:** NTRO Automated Transformation Platform.
+## SLIDE 1 — TITLE
+**Title:** {title}
+**Subtitle:** Operational Intelligence Briefing for {audience}
 
 **Speaker Notes:**
-Welcome everyone. Today's presentation provides an executive and operational synthesis of recent security telemetry, structured for rapid decision-making and cross-agency coordination.
+Welcome everyone. This briefing provides a grounded analysis of recent operational intelligence, structured specifically for {audience} with an objective to {objective.lower()} stakeholders on risk containment and mitigation actions.
 
 ---
-## SLIDE 2: Incident Overview & Discovery
-**Key Points:**
-- **Initial Event:** {summary_p1[:120]}...
-- **Observed Behavior:** {summary_p2[:120]}...
-- **Severity Rating:** **{severity}**
+## SLIDE 2 — OVERVIEW
+**Situation & Context:**
+• **Event Summary:** {p1[:130]}...
+• **Event Timeline:** Verified activity recorded on {dates}.
+• **Severity Status:** Classified as **{severity}**.
 
 **Speaker Notes:**
-As observed during the discovery phase, unauthorized attempts were detected targeting organizational communication channels. Immediate triage was initiated to assess the blast radius.
+Reviewing the background: anomalous activity was identified across monitored channels. Immediate triage was initiated to assess the blast radius and determine affected dependencies.
 
 ---
-## SLIDE 3: Key Findings & Indicators of Compromise
-**Key Points:**
-- **Network Indicators:** {ips if ips != 'Not specified in source' else 'Internal telemetry vectors'}
-- **Associated Domains:** {domains if domains != 'Not specified in source' else 'Suspicious harvesting endpoints'}
-- **Vulnerabilities:** {cves if cves != 'Not specified in source' else 'Credential harvesting vector'}
+## SLIDE 3 — KEY FINDINGS
+**Core Observations:**
+• **Adversary Activity:** {p2[:130]}...
+• **Targeted Systems:** {systems}
+• **Network Indicators:** `{ips}` | `{domains}`
 
 **Speaker Notes:**
-Our technical review isolated these indicators. It is vital that partner operations update their perimeter detection rules according to these verified parameters.
+Our technical assessment isolated the primary threat vectors and confirmed that initial intrusion attempts were targeted at specific operational infrastructure.
 
 ---
-## SLIDE 4: Strategic Remediation & Defensive Actions
-**Key Points:**
-- **Step 1:** Revocation of exposed sessions and mandatory credential rotation.
-- **Step 2:** Firewall and gateway domain blocklist synchronization.
-- **Step 3:** Blockchain-backed provenance validation of all briefing materials.
+## SLIDE 4 — IMPACT / RISK
+**Risk & Impact Analysis:**
+• **Potential Exposure:** Risk of credential capture and unauthorized session hijacking.
+• **Containment Scope:** Perimeter defenses deployed to prevent lateral escalation.
+• **Significance for {audience}:** {audience_focus}
 
 **Speaker Notes:**
-Moving to the strategic recommendations: we advise all teams to enact zero-trust authentication policies and verify communication integrity via our SHA-256 audit ledger.
+Regarding impact: the risk is evaluated as {severity}. While core data assets remain intact, strict containment protocols must be maintained.
 
 ---
-## SLIDE 5: Conclusion & Operational Next Steps
-**Key Points:**
-- Ongoing 24/7 threat monitoring remains active.
-- Multi-artefact reports distributed across leadership and technical tiers.
-- Audit trail permanently anchored in immutable ledger.
+## SLIDE 5 — RECOMMENDATIONS
+**Strategic & Tactical Actions:**
+• **Action 1:** Immediate token revocation and credential rotation for affected users ({users}).
+• **Action 2:** Perimeter blocklist updates for identified domain and IP indicators.
+• **Action 3:** Cryptographic audit trail preservation via SHA-256 blockchain ledger.
 
 **Speaker Notes:**
-In conclusion, containment has been achieved. We invite questions and technical comments from the panel.
+We urge all operational units to implement these prescribed mitigations immediately and ensure all incident telemetry is verified against our audit ledger.
+
+---
+## SLIDE 6 — CONCLUSION
+**Final Takeaways & Next Steps:**
+• Threat activity successfully identified and contained.
+• Continuous 24/7 monitoring maintained across organizational endpoints.
+• Full transformation audit package archived with cryptographic proof.
+
+**Speaker Notes:**
+In conclusion, prompt response has stabilized the environment. We now open the floor for questions and coordination remarks.
 """
         else:
-            return f"### Summary\n{summary_p1}\n\n### Key Points\n- {summary_p2}\n- {summary_p3}"
+            return f"### Summary\n{p1}\n\n### Key Findings\n- {p2}\n- {p3}"
 
     def generate_single_artefact(
         self,

@@ -225,30 +225,37 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                 progress_bar = st.progress(0, text="Initiating Transformation...")
                 
                 st.session_state.pipeline_stage = 2
-                progress_bar.progress(25, text="Running Input Security Analysis...")
-                time.sleep(0.3)
+                progress_bar.progress(15, text="Running Input Security & Threat Screening...")
+                time.sleep(0.2)
                 
                 st.session_state.pipeline_stage = 3
-                progress_bar.progress(50, text="Extracting Grounding Facts...")
-                time.sleep(0.3)
+                progress_bar.progress(30, text="Extracting Grounded Facts & Anti-Hallucination Anchors...")
+                grounded_facts = ContentAnalyzer.extract_structured_facts(st.session_state.source_content)
+                time.sleep(0.2)
                 
                 st.session_state.pipeline_stage = 4
-                progress_bar.progress(70, text=f"Generating {len(selected_outputs)} Artefacts...")
-                
                 ai = AIEngine()
-                results = ai.generate_multiple_artefacts(
-                    selected_outputs,
-                    st.session_state.source_content,
-                    config_meta
-                )
+                results = {}
+                total_outputs = len(selected_outputs)
+                
+                for idx, a_type in enumerate(selected_outputs):
+                    label = OUTPUT_TYPES.get(a_type, a_type.replace('_', ' ').title())
+                    prog_val = int(35 + (50 * (idx + 1) / total_outputs))
+                    progress_bar.progress(prog_val, text=f"Generating {label} ({idx + 1}/{total_outputs})...")
+                    results[a_type] = ai.generate_single_artefact(
+                        a_type,
+                        st.session_state.source_content,
+                        config_meta,
+                        grounded_facts
+                    )
                 
                 st.session_state.pipeline_stage = 5
-                progress_bar.progress(85, text="Generating SHA-256 Digests...")
+                progress_bar.progress(90, text="Calculating SHA-256 Cryptographic Hashes...")
                 out_hashes = IntegrityHasher.generate_artefact_hashes(results)
                 time.sleep(0.2)
                 
                 st.session_state.pipeline_stage = 6
-                progress_bar.progress(95, text="Recording to Blockchain Ledger...")
+                progress_bar.progress(96, text="Anchoring Transformation to Blockchain Ledger...")
                 
                 sec_stat = st.session_state.security_report.get("overall_status", "CLEAN") if st.session_state.security_report else "CLEAN"
                 
