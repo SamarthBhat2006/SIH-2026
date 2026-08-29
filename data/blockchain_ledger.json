@@ -128,5 +128,76 @@
       "security_status": "NOTICE_SENSITIVE_DATA"
     },
     "hash": "df47f2cf54f5cda9c3e7be1bb0a4e9fab1855bf0b320e01031f2fac5d605d7a2"
+  },
+  {
+    "index": 6,
+    "timestamp": 1787978294.9937997,
+    "previous_hash": "df47f2cf54f5cda9c3e7be1bb0a4e9fab1855bf0b320e01031f2fac5d605d7a2",
+    "data": {
+      "transformation_id": "DOC-78294",
+      "source_name": "Incident_Response_Report_IR2026.txt",
+      "source_hash": "8c2367fcddcaafed6cf675f8ad75c50801c66036c50962cc25ebed5f4b70b354",
+      "output_hashes": {
+        "executive_summary": "fba297a73a981db7bd0ca3e50568465c30c41b0f40253b3e2b52095dbcaa6b9c",
+        "cybersecurity_advisory": "c18e340731a698eeacde9218fce49c94ccdcaa1f1a162130b734557ecdd07e34",
+        "presentation": "512bc8c801ff4f3521cc50ecd16386f6c18c504d934e55700230d075ef86b401"
+      },
+      "artefact_count": 3,
+      "config": {
+        "audience": "Executive",
+        "tone": "Professional",
+        "detail": "Standard",
+        "objective": "Inform"
+      },
+      "security_status": "NOTICE_SENSITIVE_DATA"
+    },
+    "hash": "13aabf786d32cccdb0d164f6381a397ba0c35578332af4f4ef385059b8a28495"
+  },
+  {
+    "index": 7,
+    "timestamp": 1787978339.8163188,
+    "previous_hash": "13aabf786d32cccdb0d164f6381a397ba0c35578332af4f4ef385059b8a28495",
+    "data": {
+      "transformation_id": "DOC-78339",
+      "source_name": "Incident_Response_Report_IR2026.txt",
+      "source_hash": "8c2367fcddcaafed6cf675f8ad75c50801c66036c50962cc25ebed5f4b70b354",
+      "output_hashes": {
+        "executive_summary": "03c189e9a918e096a9333e5a96196241c83f0fd8a7ef36668aeb5f8155e69537",
+        "cybersecurity_advisory": "ce4969d5ee29edeaaa8a3c3fd59f9b6338fd77ceddd9927ca322259d62a0c2db",
+        "presentation": "512bc8c801ff4f3521cc50ecd16386f6c18c504d934e55700230d075ef86b401"
+      },
+      "artefact_count": 3,
+      "config": {
+        "audience": "Executive",
+        "tone": "Urgent",
+        "detail": "Brief",
+        "objective": "Inform"
+      },
+      "security_status": "NOTICE_SENSITIVE_DATA"
+    },
+    "hash": "7e1ae3c51741d600d66f5a7aa0b8f1ef318cde8d587c0a7b2ec2a621cdbd475d"
+  },
+  {
+    "index": 8,
+    "timestamp": 1787978397.6841657,
+    "previous_hash": "7e1ae3c51741d600d66f5a7aa0b8f1ef318cde8d587c0a7b2ec2a621cdbd475d",
+    "data": {
+      "transformation_id": "DOC-78397",
+      "source_name": "Incident_Response_Report_IR2026.txt",
+      "source_hash": "8c2367fcddcaafed6cf675f8ad75c50801c66036c50962cc25ebed5f4b70b354",
+      "output_hashes": {
+        "linkedin_post": "016ef071e404801d250e2767bad840ee4f8bd2170c71babd4d220f50197ad2cb",
+        "x_thread": "db76eb5e0122028dec8803ac973992ac019f0977ea284551423287a4094eeae6"
+      },
+      "artefact_count": 2,
+      "config": {
+        "audience": "Executive",
+        "tone": "Urgent",
+        "detail": "Brief",
+        "objective": "Inform"
+      },
+      "security_status": "NOTICE_SENSITIVE_DATA"
+    },
+    "hash": "e3cd2cc082ed8f95c350f14e22c560c889e29128edad54eef4dc703ff3f8db5a"
   }
 ]
