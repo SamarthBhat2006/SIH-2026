@@ -29,6 +29,8 @@ from modules.hashing import IntegrityHasher
 from modules.blockchain import BlockchainLedger
 from modules.history import TransformationHistoryDB
 from modules.ai_engine import AIEngine
+from modules.ppt_generator import generate_ppt_content, build_pptx_file, PPTGenerationError
+from modules.infographic_generator import build_infographic_image, InfographicGenerationError
 from ui.components import (
     render_hero_banner,
     render_pipeline_stepper,
@@ -81,6 +83,18 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
         st.session_state.chk_link = True
     if "chk_x" not in st.session_state:
         st.session_state.chk_x = True
+    if "chk_pptx" not in st.session_state:
+        st.session_state.chk_pptx = False
+    if "generated_pptx_bytes" not in st.session_state:
+        st.session_state.generated_pptx_bytes = None
+    if "generated_pptx_filename" not in st.session_state:
+        st.session_state.generated_pptx_filename = ""
+    if "chk_infographic" not in st.session_state:
+        st.session_state.chk_infographic = False
+    if "generated_infographic_bytes" not in st.session_state:
+        st.session_state.generated_infographic_bytes = None
+    if "generated_infographic_filename" not in st.session_state:
+        st.session_state.generated_infographic_filename = ""
 
     # Audience Change Callback for Automatic Profile Application
     def on_audience_change():
@@ -148,11 +162,11 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
 
         input_method = st.radio(
             "Select Method:",
-            ["Direct Paste", "Upload File (TXT, PDF, DOCX)"],
+            ["✍️ Direct Paste", "📄 Upload File", "🌐 Scrape URL"],
             horizontal=True
         )
 
-        if input_method == "Direct Paste":
+        if input_method == "✍️ Direct Paste":
             pasted_text = st.text_area(
                 "Source Content / Operational Brief:",
                 value=st.session_state.source_content,
@@ -172,11 +186,11 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                     st.session_state.source_hash = ""
                     st.session_state.pipeline_stage = 0
 
-        else:
+        elif input_method == "📄 Upload File":
             uploaded_file = st.file_uploader(
                 "Choose file:",
-                type=["txt", "pdf", "docx"],
-                help="Supported formats: TXT, PDF, DOCX (Max 10MB)"
+                type=["txt", "pdf", "docx", "jpg", "jpeg", "png", "webp"],
+                help="Supported: TXT, PDF, DOCX — Documents | JPG, PNG, WEBP — Image OCR (requires Tesseract) | Max 10MB"
             )
             if uploaded_file is not None:
                 try:
@@ -188,9 +202,31 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                     st.session_state.security_report = SecurityScanner.full_scan(parsed["content"])
                     st.session_state.source_hash = IntegrityHasher.hash_text(parsed["content"])
                     st.session_state.pipeline_stage = 2
-                    st.success(f"✓ Extracted {parsed['word_count']} words from {uploaded_file.name}")
+                    icon = "🖼️" if parsed["source_type"] == "image" else "📄"
+                    st.success(f"{icon} Extracted {parsed['word_count']} words from {uploaded_file.name}")
                 except DocumentProcessingError as e:
                     st.error(f"Extraction Error: {str(e)}")
+
+        else:  # Scrape URL
+            url_input = st.text_input(
+                "Article / Report URL:",
+                placeholder="https://example.com/news/article",
+                help="Paste a public URL — news articles, reports, advisories, blog posts. Login-protected pages are not supported."
+            )
+            scrape_btn = st.button("🌐 Extract Article Text", use_container_width=True)
+            if scrape_btn and url_input.strip():
+                with st.spinner("Fetching and extracting article content..."):
+                    try:
+                        parsed = DocumentProcessor.extract_from_url(url_input.strip())
+                        st.session_state.source_content = parsed["content"]
+                        st.session_state.source_name = parsed["file_name"]
+                        st.session_state.source_type = parsed["source_type"]
+                        st.session_state.security_report = SecurityScanner.full_scan(parsed["content"])
+                        st.session_state.source_hash = IntegrityHasher.hash_text(parsed["content"])
+                        st.session_state.pipeline_stage = 2
+                        st.success(f"🌐 Extracted {parsed['word_count']} words from {parsed.get('source_url', url_input)}")
+                    except DocumentProcessingError as e:
+                        st.error(f"URL Extraction Error: {str(e)}")
 
         # Real-time Security Notice
         if st.session_state.source_content:
@@ -252,10 +288,12 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
         with c_opt1:
             chk_exec = st.checkbox("📋 Executive Summary", key="chk_exec")
             chk_adv = st.checkbox("🚨 Cybersecurity Advisory", key="chk_adv")
-            chk_pres = st.checkbox("📊 Presentation Deck", key="chk_pres")
+            chk_pres = st.checkbox("📊 Interactive Presentation Deck", key="chk_pres")
+            chk_infographic = st.checkbox("🖼️ Infographic Brief", key="chk_infographic")
         with c_opt2:
             chk_link = st.checkbox("💼 LinkedIn Post", key="chk_link")
             chk_x = st.checkbox("🧵 X / Twitter Thread", key="chk_x")
+            chk_pptx = st.checkbox("📈 Presentation / PowerPoint (.pptx)", key="chk_pptx")
 
         selected_outputs = []
         if chk_exec: selected_outputs.append("executive_summary")
@@ -263,10 +301,19 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
         if chk_link: selected_outputs.append("linkedin_post")
         if chk_x: selected_outputs.append("x_thread")
         if chk_pres: selected_outputs.append("presentation")
+        if chk_pptx: selected_outputs.append("presentation_pptx")
+        if chk_infographic: selected_outputs.append("infographic")
+
+        if len(selected_outputs) == 1 and selected_outputs[0] == "presentation_pptx":
+            btn_label = "Generate Presentation"
+        elif len(selected_outputs) == 1 and selected_outputs[0] == "infographic":
+            btn_label = "Generate Infographic Brief"
+        else:
+            btn_label = "Transform Content →"
 
         st.markdown("<br>", unsafe_allow_html=True)
         btn_transform = st.button(
-            "Transform Content →",
+            btn_label,
             type="primary",
             use_container_width=True,
             disabled=not (st.session_state.source_content.strip() and selected_outputs)
@@ -307,12 +354,62 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                     label = OUTPUT_TYPES.get(a_type, a_type.replace('_', ' ').title())
                     prog_val = int(35 + (50 * (idx + 1) / total_outputs))
                     progress_bar.progress(prog_val, text=f"Generating {label} ({idx + 1}/{total_outputs})...")
-                    results[a_type] = ai.generate_single_artefact(
-                        a_type,
-                        st.session_state.source_content,
-                        config_meta,
-                        grounded_facts
-                    )
+                    
+                    if a_type == "presentation_pptx":
+                        try:
+                            ppt_json = generate_ppt_content(
+                                st.session_state.source_content,
+                                audience=st.session_state.cfg_audience,
+                                tone=st.session_state.cfg_tone
+                            )
+                            pptx_path = build_pptx_file(ppt_json)
+                            pptx_bytes = pptx_path.read_bytes()
+                            st.session_state.generated_pptx_bytes = pptx_bytes
+                            st.session_state.generated_pptx_filename = pptx_path.name
+
+                            # Build Markdown representation for preview in tab
+                            md_lines = [
+                                f"# 📊 {ppt_json.get('presentation_title', 'AI Generated Presentation')}",
+                                f"**Subtitle:** {ppt_json.get('subtitle', '')}\n",
+                                "---"
+                            ]
+                            for s in ppt_json.get("slides", []):
+                                md_lines.append(f"### Slide {s.get('slide_number')}: {s.get('title')}")
+                                md_lines.append(f"**Layout:** `{s.get('layout')}`")
+                                for b in s.get("bullets", []):
+                                    md_lines.append(f"• {b}")
+                                if s.get("speaker_notes"):
+                                    md_lines.append(f"\n> 🗣️ **Speaker Notes:** {s.get('speaker_notes')}")
+                                md_lines.append("\n---")
+                            
+                            results[a_type] = "\n".join(md_lines)
+
+                        except PPTGenerationError as err:
+                            st.error(str(err))
+                            results[a_type] = f"⚠️ Presentation Generation Failed: {str(err)}"
+                        except Exception as e:
+                            st.error("Unable to generate presentation content. Please try again.")
+                            results[a_type] = "⚠️ Unable to generate presentation content. Please try again."
+                    else:
+                        results[a_type] = ai.generate_single_artefact(
+                            a_type,
+                            st.session_state.source_content,
+                            config_meta,
+                            grounded_facts
+                        )
+                        # If this is the infographic, also generate the PNG image
+                        if a_type == "infographic" and results[a_type]:
+                            try:
+                                png_path = build_infographic_image(
+                                    results[a_type],
+                                    doc_title=st.session_state.source_name
+                                )
+                                st.session_state.generated_infographic_bytes = png_path.read_bytes()
+                                st.session_state.generated_infographic_filename = png_path.name
+                            except InfographicGenerationError as _ie:
+                                st.warning(f"Infographic image could not be rendered: {_ie}")
+                            except Exception:
+                                st.warning("Infographic image rendering failed. The text brief is still available.")
                 
                 st.session_state.pipeline_stage = 5
                 progress_bar.progress(90, text="Calculating SHA-256 Cryptographic Hashes...")
@@ -367,7 +464,7 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
             st.markdown("""<div style="text-align: center; padding: 3.5rem 1.5rem; color: var(--color-muted, #a1a1aa);">
 <div style="font-size: 2.5rem; margin-bottom: 0.6rem;">📄</div>
 <div style="font-weight: 800; color: var(--color-ink-black); font-size: 1.15rem; margin-bottom: 0.35rem;">Ready to Generate</div>
-<div style="font-size: 0.92rem; max-width: 360px; margin: 0 auto; color: var(--color-graphite); line-height: 1.5;">Ingest source content on the left, pick target parameters, and click <strong>Transform Content</strong> to produce 5 grounded artefacts simultaneously.</div>
+<div style="font-size: 0.92rem; max-width: 360px; margin: 0 auto; color: var(--color-graphite); line-height: 1.5;">Ingest source content on the left, pick target parameters, and click <strong>Transform Content</strong> or <strong>Generate Presentation</strong>.</div>
 </div>""", unsafe_allow_html=True)
 
         else:
@@ -391,30 +488,116 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                     hash_val = out_hashes.get(art_key, "N/A")
                     render_hash_badge(hash_val, f"{OUTPUT_TYPES.get(art_key)} Hash")
 
-                    col_c1, col_c2 = st.columns([1, 1])
-                    with col_c1:
-                        st.download_button(
-                            label=f"Download (.md)",
-                            data=content,
-                            file_name=f"{art_key}_{int(time.time())}.md",
-                            mime="text/markdown",
-                            key=f"dl_{art_key}"
-                        )
-                    with col_c2:
-                        st.download_button(
-                            label=f"Download (.txt)",
-                            data=content,
-                            file_name=f"{art_key}_{int(time.time())}.txt",
-                            mime="text/plain",
-                            key=f"dl_txt_{art_key}"
-                        )
+                    if art_key == "presentation_pptx":
+                        col_c1, col_c2 = st.columns([1.5, 1])
+                        with col_c1:
+                            if st.session_state.get("generated_pptx_bytes"):
+                                st.download_button(
+                                    label="Download PPTX",
+                                    data=st.session_state.generated_pptx_bytes,
+                                    file_name=st.session_state.get("generated_pptx_filename", f"AI_Generated_Presentation_{int(time.time())}.pptx"),
+                                    mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                                    type="primary",
+                                    key=f"dl_pptx_{art_key}"
+                                )
+                        with col_c2:
+                            st.download_button(
+                                label="Download Outline (.md)",
+                                data=content,
+                                file_name=f"presentation_outline_{int(time.time())}.md",
+                                mime="text/markdown",
+                                key=f"dl_md_{art_key}"
+                            )
 
-                    st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
-
-                    if art_key == "presentation":
-                        render_interactive_slide_deck(content, key_suffix="dash")
-                    else:
+                        st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
                         st.markdown(content)
+
+                    else:
+                        # ── Infographic: show visual PNG + text brief ──────────
+                        if art_key == "infographic":
+                            infographic_bytes = st.session_state.get("generated_infographic_bytes")
+                            if infographic_bytes:
+                                col_c1, col_c2, col_c3 = st.columns([1.2, 1, 1])
+                                with col_c1:
+                                    st.download_button(
+                                        label="⬇️ Download Infographic (.png)",
+                                        data=infographic_bytes,
+                                        file_name=st.session_state.get(
+                                            "generated_infographic_filename",
+                                            f"AI_Infographic_{int(time.time())}.png"
+                                        ),
+                                        mime="image/png",
+                                        type="primary",
+                                        key=f"dl_png_{art_key}"
+                                    )
+                                with col_c2:
+                                    st.download_button(
+                                        label="Download Brief (.md)",
+                                        data=content,
+                                        file_name=f"infographic_brief_{int(time.time())}.md",
+                                        mime="text/markdown",
+                                        key=f"dl_md_{art_key}"
+                                    )
+                                with col_c3:
+                                    st.download_button(
+                                        label="Download Brief (.txt)",
+                                        data=content,
+                                        file_name=f"infographic_brief_{int(time.time())}.txt",
+                                        mime="text/plain",
+                                        key=f"dl_txt_{art_key}"
+                                    )
+                                st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
+                                st.markdown("**🖼️ Generated Infographic Preview**")
+                                st.image(infographic_bytes, use_container_width=True, caption="AI-Generated Intelligence Infographic")
+                            else:
+                                col_c1, col_c2 = st.columns([1, 1])
+                                with col_c1:
+                                    st.download_button(
+                                        label="Download Brief (.md)",
+                                        data=content,
+                                        file_name=f"infographic_brief_{int(time.time())}.md",
+                                        mime="text/markdown",
+                                        key=f"dl_md_only_{art_key}"
+                                    )
+                                with col_c2:
+                                    st.download_button(
+                                        label="Download Brief (.txt)",
+                                        data=content,
+                                        file_name=f"infographic_brief_{int(time.time())}.txt",
+                                        mime="text/plain",
+                                        key=f"dl_txt_only_{art_key}"
+                                    )
+                                st.warning("Visual infographic image could not be rendered. Showing text brief below.")
+
+                            st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
+                            st.markdown("**📋 Infographic Content Brief**")
+                            st.markdown(content)
+
+                        else:
+                            col_c1, col_c2 = st.columns([1, 1])
+                            with col_c1:
+                                st.download_button(
+                                    label=f"Download (.md)",
+                                    data=content,
+                                    file_name=f"{art_key}_{int(time.time())}.md",
+                                    mime="text/markdown",
+                                    key=f"dl_{art_key}"
+                                )
+                            with col_c2:
+                                st.download_button(
+                                    label=f"Download (.txt)",
+                                    data=content,
+                                    file_name=f"{art_key}_{int(time.time())}.txt",
+                                    mime="text/plain",
+                                    key=f"dl_txt_{art_key}"
+                                )
+
+                            st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
+
+                            if art_key == "presentation":
+                                render_interactive_slide_deck(content, key_suffix="dash")
+                            else:
+                                st.markdown(content)
 
             # Export Complete Transformation Package
             st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1.25rem 0;'>", unsafe_allow_html=True)

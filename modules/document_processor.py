@@ -1,6 +1,7 @@
 """
 Document Processor Module
-Handles text extraction from pasted text, TXT, PDF, and DOCX files.
+Handles text extraction from pasted text, TXT, PDF, DOCX files,
+images (OCR via pytesseract), and URLs (via trafilatura).
 """
 
 import io
@@ -108,10 +109,126 @@ class DocumentProcessor:
             "content": content,
         }
 
+    @staticmethod
+    def extract_from_image(file_bytes: bytes, file_name: str = "image.png") -> Dict[str, Any]:
+        """
+        Extract text from image (JPG, PNG, WEBP) using OCR via pytesseract + Pillow.
+        Requires Tesseract OCR to be installed system-wide.
+        On Windows: https://github.com/UB-Mannheim/tesseract/wiki
+        """
+        try:
+            from PIL import Image
+        except ImportError:
+            raise DocumentProcessingError(
+                "Pillow is not installed. Run: pip install Pillow"
+            )
+
+        try:
+            import pytesseract
+        except ImportError:
+            raise DocumentProcessingError(
+                "pytesseract is not installed. Run: pip install pytesseract"
+            )
+
+        try:
+            image = Image.open(io.BytesIO(file_bytes))
+        except Exception as e:
+            raise DocumentProcessingError(f"Could not open image file: {str(e)}")
+
+        try:
+            content = pytesseract.image_to_string(image, lang="eng").strip()
+        except pytesseract.TesseractNotFoundError:
+            raise DocumentProcessingError(
+                "Tesseract OCR engine is not installed or not found on PATH. "
+                "Please install it from: https://github.com/UB-Mannheim/tesseract/wiki — "
+                "then restart the application."
+            )
+        except Exception as e:
+            raise DocumentProcessingError(f"OCR extraction failed: {str(e)}")
+
+        if not content:
+            raise DocumentProcessingError(
+                "No text could be extracted from the image. "
+                "Ensure the image contains readable printed text and is not blurry or rotated."
+            )
+
+        return {
+            "source_type": "image",
+            "file_name": file_name,
+            "char_count": len(content),
+            "word_count": len(content.split()),
+            "content": content,
+        }
+
+    @staticmethod
+    def extract_from_url(url: str) -> Dict[str, Any]:
+        """
+        Scrape and extract clean article text from a public URL using trafilatura.
+        Works with news articles, reports, blog posts, and most public pages.
+        """
+        url = url.strip()
+        if not url:
+            raise DocumentProcessingError("URL is empty.")
+
+        if not (url.startswith("http://") or url.startswith("https://")):
+            url = "https://" + url
+
+        try:
+            import trafilatura
+        except ImportError:
+            raise DocumentProcessingError(
+                "trafilatura is not installed. Run: pip install trafilatura"
+            )
+
+        try:
+            downloaded = trafilatura.fetch_url(url)
+        except Exception as e:
+            raise DocumentProcessingError(f"Failed to fetch URL: {str(e)}")
+
+        if not downloaded:
+            raise DocumentProcessingError(
+                "Could not download page content. "
+                "Check that the URL is public and accessible."
+            )
+
+        try:
+            content = trafilatura.extract(
+                downloaded,
+                include_comments=False,
+                include_tables=True,
+                no_fallback=False,
+            )
+        except Exception as e:
+            raise DocumentProcessingError(f"Content extraction from URL failed: {str(e)}")
+
+        if not content or len(content.strip()) < 50:
+            raise DocumentProcessingError(
+                "Extracted content is too short or empty. "
+                "This page may require login, JavaScript rendering, or block scraping."
+            )
+
+        content = content.strip()
+        # Derive a clean filename from the URL domain
+        try:
+            from urllib.parse import urlparse
+            domain = urlparse(url).netloc.replace("www.", "")
+            file_name = f"Web_Article_{domain}.txt"
+        except Exception:
+            file_name = "Web_Article.txt"
+
+        return {
+            "source_type": "url",
+            "file_name": file_name,
+            "source_url": url,
+            "char_count": len(content),
+            "word_count": len(content.split()),
+            "content": content,
+        }
+
     @classmethod
     def process_upload(cls, file_name: str, file_bytes: bytes) -> Dict[str, Any]:
         """Router method to extract text based on file extension."""
-        ext = file_name.lower().split(".")[-1]
+        ext = file_name.lower().rsplit(".", 1)[-1]
         
         if ext == "txt":
             return cls.extract_from_txt(file_bytes, file_name)
@@ -119,5 +236,10 @@ class DocumentProcessor:
             return cls.extract_from_pdf(file_bytes, file_name)
         elif ext in ["docx", "doc"]:
             return cls.extract_from_docx(file_bytes, file_name)
+        elif ext in ["jpg", "jpeg", "png", "webp"]:
+            return cls.extract_from_image(file_bytes, file_name)
         else:
-            raise DocumentProcessingError(f"Unsupported file format: .{ext}. Please provide TXT, PDF, or DOCX.")
+            raise DocumentProcessingError(
+                f"Unsupported file format: .{ext}. "
+                "Please provide TXT, PDF, DOCX, JPG, PNG, or WEBP."
+            )

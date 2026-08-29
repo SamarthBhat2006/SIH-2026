@@ -38,6 +38,8 @@ OUTPUT_TYPES = {
     "linkedin_post": "LinkedIn Post",
     "x_thread": "X/Twitter Thread",
     "presentation": "Interactive Presentation",
+    "presentation_pptx": "Presentation / PowerPoint (.pptx)",
+    "infographic": "Infographic Brief",
 }
 
 # Configuration Options
