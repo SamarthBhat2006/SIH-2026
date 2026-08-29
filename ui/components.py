@@ -38,6 +38,7 @@ def render_top_navbar(current_view: str = "Dashboard") -> None:
                     if st.session_state.get("nav_choice") != item:
                         st.session_state.nav_choice = item
                         st.rerun()
+                st.markdown('<span class="top-nav-btn"></span>', unsafe_allow_html=True)
 
     with col_badge:
         st.markdown("""

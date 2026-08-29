@@ -185,6 +185,53 @@ def get_custom_css() -> str:
         align-items: center !important;
     }
 
+    /* Style all buttons inside columns containing .top-nav-btn */
+    div[data-testid="column"]:has(.top-nav-btn) button {
+        padding: 6px 14px !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        font-size: var(--text-body-sm) !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.02em !important;
+        border-radius: 9999px !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease-in-out !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+    }
+
+    /* Style active vs inactive top nav buttons */
+    /* Inactive (Secondary style under top nav) */
+    div[data-testid="column"]:has(.top-nav-btn) button[kind="secondary"],
+    div[data-testid="column"]:has(.top-nav-btn) button[data-testid="baseButton-secondary"] {
+        background-color: var(--color-paper-white) !important;
+        color: var(--color-graphite) !important;
+        border: 1px solid var(--color-hairline) !important;
+    }
+    div[data-testid="column"]:has(.top-nav-btn) button[kind="secondary"]:hover,
+    div[data-testid="column"]:has(.top-nav-btn) button[data-testid="baseButton-secondary"]:hover {
+        background-color: #f4f4f0 !important;
+        border-color: var(--color-ink-black) !important;
+        color: var(--color-ink-black) !important;
+    }
+
+    /* Active (Primary style under top nav) */
+    div[data-testid="column"]:has(.top-nav-btn) button[kind="primary"],
+    div[data-testid="column"]:has(.top-nav-btn) button[data-testid="baseButton-primary"] {
+        background-color: var(--color-ink-black) !important;
+        color: var(--color-paper-white) !important;
+        border: 1.5px solid var(--color-ink-black) !important;
+    }
+    div[data-testid="column"]:has(.top-nav-btn) button[kind="primary"]:hover,
+    div[data-testid="column"]:has(.top-nav-btn) button[data-testid="baseButton-primary"]:hover {
+        background-color: #222222 !important;
+        color: var(--color-paper-white) !important;
+    }
+
     /* === HERO SECTION === */
     .gumroad-hero-container {
         text-align: center;
