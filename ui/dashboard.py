@@ -202,8 +202,6 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
         st.markdown("</div>", unsafe_allow_html=True)
 
         # Settings Card with Automatic Configuration Profile Badge
-        st.markdown('<div class="gumroad-box">', unsafe_allow_html=True)
-
         curr_aud = st.session_state.cfg_audience
         curr_prof = AUDIENCE_PROFILES.get(curr_aud, {})
         is_default = (
@@ -214,10 +212,11 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
         badge_html = f'<span class="cfg-auto-badge">✓ Recommended for {curr_aud}</span>' if is_default else '<span class="cfg-custom-badge">⚙️ Custom settings</span>'
 
         st.markdown(f"""
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <div class="gumroad-box-title" style="margin-bottom: 0;">⚙️ 2. Configure Transformation</div>
-            {badge_html}
-        </div>
+        <div class="gumroad-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div class="gumroad-box-title" style="margin-bottom: 0;">⚙️ 2. Configure Transformation</div>
+                {badge_html}
+            </div>
         """, unsafe_allow_html=True)
 
         cfg_col1, cfg_col2 = st.columns(2)

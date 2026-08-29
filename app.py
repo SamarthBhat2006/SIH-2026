@@ -44,21 +44,28 @@ NAV_OPTIONS = ["Dashboard", "History", "Ledger", "About"]
 if "nav_choice" not in st.session_state:
     st.session_state.nav_choice = "Dashboard"
 
-# Callback for sidebar navigation
-def on_sidebar_nav_change():
-    st.session_state.nav_choice = st.session_state.sidebar_nav
-
-# Sidebar Navigation (Clean, no redundant branding)
-current_nav_index = NAV_OPTIONS.index(st.session_state.nav_choice) if st.session_state.nav_choice in NAV_OPTIONS else 0
+# Sidebar Navigation (Interactive full-width buttons)
 st.sidebar.markdown("<div style='font-weight: 800; font-size: 0.95rem; color: #000000; margin: 0.5rem 0 0.85rem 0;'>Navigation</div>", unsafe_allow_html=True)
-sidebar_selection = st.sidebar.radio(
-    "Navigation Menu",
-    NAV_OPTIONS,
-    index=current_nav_index,
-    key="sidebar_nav",
-    on_change=on_sidebar_nav_change,
-    label_visibility="collapsed"
-)
+
+nav_items_sidebar = [
+    ("Dashboard", "⚡ Dashboard"),
+    ("History", "📜 History"),
+    ("Ledger", "🔗 Blockchain Ledger"),
+    ("About", "ℹ️ About Platform"),
+]
+
+for view_key, label in nav_items_sidebar:
+    is_active = (st.session_state.nav_choice == view_key)
+    btn_type = "primary" if is_active else "secondary"
+    if st.sidebar.button(
+        label,
+        key=f"sidebar_btn_{view_key.lower()}",
+        type=btn_type,
+        use_container_width=True
+    ):
+        if st.session_state.nav_choice != view_key:
+            st.session_state.nav_choice = view_key
+            st.rerun()
 
 st.sidebar.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1.25rem 0;'>", unsafe_allow_html=True)
 st.sidebar.markdown("<div style='font-weight: 800; font-size: 0.85rem; color: #000000; margin-bottom: 0.5rem;'>System Status</div>", unsafe_allow_html=True)

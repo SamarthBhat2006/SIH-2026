@@ -225,5 +225,213 @@
       "security_status": "NOTICE_SENSITIVE_DATA"
     },
     "hash": "e2fb91a9be6d51b2663ff3f802222eff1dcce7b1b94afdf3ea52efe2db50a523"
+  },
+  {
+    "index": 10,
+    "timestamp": 1787983426.8801682,
+    "previous_hash": "e2fb91a9be6d51b2663ff3f802222eff1dcce7b1b94afdf3ea52efe2db50a523",
+    "data": {
+      "transformation_id": "DOC-83426",
+      "source_name": "Threat_Advisory_VPN_ZeroDay.txt",
+      "source_hash": "4b52b213b39fc8286d99025061b4cbb330e4f8481c83d19930bd732d8d9517a5",
+      "output_hashes": {
+        "executive_summary": "ed740faa63f7549d57cbb94ea6a9b3e02c541ac18bfeb41e9616a95631cd7cf1",
+        "cybersecurity_advisory": "328406c5382aa87c8a16f4acb01544b21794e91414c923d32de288a1d36cbd43",
+        "linkedin_post": "36b3644b81bfd69bd003e83ba6f256f5b5bd18948bb35fc53903744e2db72e5a",
+        "x_thread": "d7a9322c6ef82c20eaa4cae3938697348ac5204e22b2466b1f572d43e087a0c1",
+        "presentation": "d0b758429764aa178d54b8b727e361998d266e55cd7385fb52059a0174fbf6b2"
+      },
+      "artefact_count": 5,
+      "config": {
+        "audience": "Executive",
+        "tone": "Professional",
+        "detail": "Brief",
+        "objective": "Inform"
+      },
+      "security_status": "NOTICE_SENSITIVE_DATA"
+    },
+    "hash": "a7d76bbb96e5bd55f5fe8467e4499e60602a15b4f986bb83edd854ca60b7da45"
+  },
+  {
+    "index": 11,
+    "timestamp": 1787984704.1479695,
+    "previous_hash": "a7d76bbb96e5bd55f5fe8467e4499e60602a15b4f986bb83edd854ca60b7da45",
+    "data": {
+      "transformation_id": "DOC-84704",
+      "source_name": "Incident_Response_Report_IR2026.txt",
+      "source_hash": "8c2367fcddcaafed6cf675f8ad75c50801c66036c50962cc25ebed5f4b70b354",
+      "output_hashes": {
+        "executive_summary": "9435c65fbf9320e51a8ea17fdd0ec702d1e773d14ffd040303bef83f40680725",
+        "cybersecurity_advisory": "b61e54cd19ad468eb12273fea0ef18131d875f65c81ec33abafa9c74c7464823",
+        "linkedin_post": "5443a1b1fd71386d89a7d790fca4813ca6d5587c098e9f1b380af6a2c70dba21",
+        "x_thread": "d4cd9d1fc74979cdb8fb65b71fd8196df774d8b4adb890c64540619995f4c5bf",
+        "presentation": "a472b39e448f1dd7714a9e3a2d02942e993f0140d3d638e80eb5810a880de0cb"
+      },
+      "artefact_count": 5,
+      "config": {
+        "audience": "Executive",
+        "tone": "Professional",
+        "detail": "Brief",
+        "objective": "Inform"
+      },
+      "security_status": "NOTICE_SENSITIVE_DATA"
+    },
+    "hash": "aaeecacb491e64c183453ec69e12785a6a918b67d9ac53b1eac50a5a4d05a9af"
+  },
+  {
+    "index": 12,
+    "timestamp": 1787984843.6177328,
+    "previous_hash": "aaeecacb491e64c183453ec69e12785a6a918b67d9ac53b1eac50a5a4d05a9af",
+    "data": {
+      "transformation_id": "DOC-84843",
+      "source_name": "Incident_Response_Report_IR2026.txt",
+      "source_hash": "8c2367fcddcaafed6cf675f8ad75c50801c66036c50962cc25ebed5f4b70b354",
+      "output_hashes": {
+        "executive_summary": "c73cc7bf08b938295231cdb87d1cbb8895418cdc23cc0f445d684bc681017c90"
+      },
+      "artefact_count": 1,
+      "config": {
+        "audience": "Government/Official",
+        "tone": "Formal",
+        "detail": "Detailed",
+        "objective": "Inform"
+      },
+      "security_status": "NOTICE_SENSITIVE_DATA"
+    },
+    "hash": "0e4962939e503acda659d2de28859d8e9a77c91e35b91a7f66c644b12cca9d7a"
+  },
+  {
+    "index": 13,
+    "timestamp": 1787984877.8908548,
+    "previous_hash": "0e4962939e503acda659d2de28859d8e9a77c91e35b91a7f66c644b12cca9d7a",
+    "data": {
+      "transformation_id": "DOC-84877",
+      "source_name": "Incident_Response_Report_IR2026.txt",
+      "source_hash": "8c2367fcddcaafed6cf675f8ad75c50801c66036c50962cc25ebed5f4b70b354",
+      "output_hashes": {
+        "executive_summary": "b84a929c21e66d8376779bf7c5131401b4862695508c7a5b3026091cd8a4a274"
+      },
+      "artefact_count": 1,
+      "config": {
+        "audience": "Government/Official",
+        "tone": "Urgent",
+        "detail": "Brief",
+        "objective": "Educate"
+      },
+      "security_status": "NOTICE_SENSITIVE_DATA"
+    },
+    "hash": "dddc3e2fa6698fc88e6ef5e2c43f879e55f02a89da76cae47c09272988e6db51"
+  },
+  {
+    "index": 14,
+    "timestamp": 1787984916.4834461,
+    "previous_hash": "dddc3e2fa6698fc88e6ef5e2c43f879e55f02a89da76cae47c09272988e6db51",
+    "data": {
+      "transformation_id": "DOC-84916",
+      "source_name": "Incident_Response_Report_IR2026.txt",
+      "source_hash": "8c2367fcddcaafed6cf675f8ad75c50801c66036c50962cc25ebed5f4b70b354",
+      "output_hashes": {
+        "executive_summary": "c892b6975b2b56360a452f377808da8976e7d50ef9f7e0d0680443f045fbba27"
+      },
+      "artefact_count": 1,
+      "config": {
+        "audience": "Government/Official",
+        "tone": "Simple",
+        "detail": "Brief",
+        "objective": "Summarize"
+      },
+      "security_status": "NOTICE_SENSITIVE_DATA"
+    },
+    "hash": "72d9c178e3b02052b78a41251b5001b083f870c0cce18f8e0d2b59def1a61c40"
+  },
+  {
+    "index": 15,
+    "timestamp": 1787985573.110573,
+    "previous_hash": "72d9c178e3b02052b78a41251b5001b083f870c0cce18f8e0d2b59def1a61c40",
+    "data": {
+      "transformation_id": "DOC-85573",
+      "source_name": "Incident_Response_Report_IR2026.txt",
+      "source_hash": "8c2367fcddcaafed6cf675f8ad75c50801c66036c50962cc25ebed5f4b70b354",
+      "output_hashes": {
+        "executive_summary": "2fa788a8b45a477b1af9ff07b7081ab65f2840a024e4cfcdc3544cdc82a11623",
+        "linkedin_post": "bf799566e5c623181bdaa81dddcf059a8b71d79d0859b2e4b463d5e0456b0711"
+      },
+      "artefact_count": 2,
+      "config": {
+        "audience": "Technical Team",
+        "tone": "Professional",
+        "detail": "Detailed",
+        "objective": "Inform"
+      },
+      "security_status": "NOTICE_SENSITIVE_DATA"
+    },
+    "hash": "559693a851b05d2f4164fc0f23a1615c3556771525bc07fd2aa467bfdc7ef433"
+  },
+  {
+    "index": 16,
+    "timestamp": 1787985756.3196132,
+    "previous_hash": "559693a851b05d2f4164fc0f23a1615c3556771525bc07fd2aa467bfdc7ef433",
+    "data": {
+      "transformation_id": "DOC-85756",
+      "source_name": "Incident_Response_Report_IR2026.txt",
+      "source_hash": "8c2367fcddcaafed6cf675f8ad75c50801c66036c50962cc25ebed5f4b70b354",
+      "output_hashes": {
+        "x_thread": "62f81f804185b3fba7e9ca1c63f3a31494961a6ec6bcb32b6d3ab48ab97936b2"
+      },
+      "artefact_count": 1,
+      "config": {
+        "audience": "Technical Team",
+        "tone": "Professional",
+        "detail": "Detailed",
+        "objective": "Inform"
+      },
+      "security_status": "NOTICE_SENSITIVE_DATA"
+    },
+    "hash": "00d1956113a16e10274aa7cd24c60c0ba4ae1fe85d874371a2b99db6d73e9906"
+  },
+  {
+    "index": 17,
+    "timestamp": 1787986135.8938787,
+    "previous_hash": "00d1956113a16e10274aa7cd24c60c0ba4ae1fe85d874371a2b99db6d73e9906",
+    "data": {
+      "transformation_id": "DOC-86135",
+      "source_name": "messy_incident_report.pdf",
+      "source_hash": "75f3c1916621b28cca66d429ff071266248fe2de52eda12061a0fad3ba150c18",
+      "output_hashes": {
+        "linkedin_post": "418e125f0cd058a5fc71ed8ae86440f1d988f78f0c3f219afb947ed00e969dbd"
+      },
+      "artefact_count": 1,
+      "config": {
+        "audience": "Social Media Audience",
+        "tone": "Engaging",
+        "detail": "Brief",
+        "objective": "Engage"
+      },
+      "security_status": "CLEAN"
+    },
+    "hash": "c619f81086ce129b0322ed6e6655d99d4a10bedd107ad58f9c50b966dafb27eb"
+  },
+  {
+    "index": 18,
+    "timestamp": 1787986279.1251154,
+    "previous_hash": "c619f81086ce129b0322ed6e6655d99d4a10bedd107ad58f9c50b966dafb27eb",
+    "data": {
+      "transformation_id": "DOC-86279",
+      "source_name": "messy_incident_report.pdf",
+      "source_hash": "75f3c1916621b28cca66d429ff071266248fe2de52eda12061a0fad3ba150c18",
+      "output_hashes": {
+        "linkedin_post": "3568cf6fb89cfb18361d9557516a3137d46ba4405d2182d2d37e01c6bf0f37ce",
+        "presentation": "2530d905a93d2fa8688951390659455871b85c120f694142651f8a82455be383"
+      },
+      "artefact_count": 2,
+      "config": {
+        "audience": "Social Media Audience",
+        "tone": "Engaging",
+        "detail": "Brief",
+        "objective": "Engage"
+      },
+      "security_status": "CLEAN"
+    },
+    "hash": "cc82746dda8423c5bf2862a44742fc157da617db5dbea4763ba26d0ba4efd43d"
   }
 ]

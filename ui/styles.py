@@ -56,7 +56,13 @@ def get_custom_css() -> str:
     header[data-testid="stHeader"] {
         background-color: transparent !important;
         color: var(--color-ink-black) !important;
-        z-index: 99 !important;
+        z-index: 10 !important;
+        pointer-events: none !important;
+    }
+    header[data-testid="stHeader"] button,
+    header[data-testid="stHeader"] [data-testid="stSidebarCollapseButton"],
+    button[data-testid="collapsedControl"] {
+        pointer-events: auto !important;
     }
     #MainMenu { display: none !important; }
     footer { display: none !important; }
@@ -74,7 +80,7 @@ def get_custom_css() -> str:
 
     .block-container {
         max-width: 1200px !important;
-        padding-top: var(--spacing-8) !important;
+        padding-top: var(--spacing-16) !important;
         padding-bottom: var(--spacing-64) !important;
         padding-left: var(--spacing-32) !important;
         padding-right: var(--spacing-32) !important;
@@ -102,6 +108,60 @@ def get_custom_css() -> str:
         box-shadow: 2px 2px 0 var(--color-ink-black) !important;
         margin: 8px 12px !important;
         z-index: 100 !important;
+    }
+
+    /* === SIDEBAR NAVIGATION BUTTONS === */
+    [data-testid="stSidebar"] [data-testid="stButton"] {
+        margin-bottom: 6px !important;
+        width: 100% !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stButton"] button {
+        width: 100% !important;
+        padding: 8px 14px !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        font-size: 0.88rem !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.01em !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        text-align: left !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease-in-out !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stButton"] button[kind="secondary"],
+    [data-testid="stSidebar"] [data-testid="stButton"] button[data-testid="baseButton-secondary"] {
+        background-color: var(--color-paper-white) !important;
+        color: var(--color-graphite) !important;
+        border: 1px solid var(--color-hairline) !important;
+        box-shadow: none !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stButton"] button[kind="secondary"]:hover,
+    [data-testid="stSidebar"] [data-testid="stButton"] button[data-testid="baseButton-secondary"]:hover {
+        background-color: #ffffff !important;
+        border-color: var(--color-ink-black) !important;
+        color: var(--color-ink-black) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 2px 2px 0 var(--color-ink-black) !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stButton"] button[kind="primary"],
+    [data-testid="stSidebar"] [data-testid="stButton"] button[data-testid="baseButton-primary"] {
+        background-color: var(--color-ink-black) !important;
+        color: var(--color-paper-white) !important;
+        border: 1.5px solid var(--color-ink-black) !important;
+        box-shadow: 2px 2px 0 var(--color-ink-black) !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stButton"] button[kind="primary"]:hover,
+    [data-testid="stSidebar"] [data-testid="stButton"] button[data-testid="baseButton-primary"]:hover {
+        background-color: #222222 !important;
+        color: var(--color-paper-white) !important;
     }
 
     /* === TOP NAV BAR === */
@@ -186,11 +246,18 @@ def get_custom_css() -> str:
     }
 
     /* Style all buttons inside columns containing .top-nav-btn */
+    div[data-testid="column"]:has(.top-nav-btn) [data-testid="stButton"] {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
     div[data-testid="column"]:has(.top-nav-btn) button {
-        padding: 6px 14px !important;
-        height: 38px !important;
-        min-height: 38px !important;
-        font-size: var(--text-body-sm) !important;
+        padding: 4px 10px !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        max-height: 32px !important;
+        font-size: 0.84rem !important;
         font-weight: 600 !important;
         letter-spacing: -0.02em !important;
         border-radius: 9999px !important;
@@ -201,6 +268,14 @@ def get_custom_css() -> str:
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        margin: 0 !important;
+        pointer-events: auto !important;
+    }
+
+    /* Pass through pointer events so clicking ANY portion of the button works immediately */
+    div[data-testid="column"]:has(.top-nav-btn) button * {
+        pointer-events: none !important;
+        line-height: 1 !important;
         margin: 0 !important;
     }
 

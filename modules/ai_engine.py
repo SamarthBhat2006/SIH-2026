@@ -18,29 +18,36 @@ class AIEngine:
         self.openai_key = openai_key or os.getenv("OPENAI_API_KEY", OPENAI_API_KEY)
 
     def _call_gemini(self, prompt: str) -> str:
-        """Invokes Google Gemini LLM API."""
-        try:
-            # Try new google-genai SDK first
-            from google import genai
-            client = genai.Client(api_key=self.gemini_key)
-            response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt,
-                config={"system_instruction": GROUNDING_SYSTEM_PROMPT}
-            )
-            if response and response.text:
-                return response.text.strip()
-        except Exception:
-            pass
+        """Invokes Google Gemini LLM API using available model endpoints."""
+        models_to_try = [
+            "gemini-3.5-flash-lite",
+            "gemini-3.5-flash",
+            "gemini-3.6-flash",
+            "gemini-3.7-flash"
+        ]
 
         try:
-            # Fallback to google.generativeai if installed
-            import google.generativeai as legacy_genai
-            legacy_genai.configure(api_key=self.gemini_key)
-            model = legacy_genai.GenerativeModel("gemini-1.5-flash", system_instruction=GROUNDING_SYSTEM_PROMPT)
-            response = model.generate_content(prompt)
-            if response and response.text:
-                return response.text.strip()
+            from google import genai
+            from google.genai import types
+            client = genai.Client(api_key=self.gemini_key)
+            config = types.GenerateContentConfig(
+                system_instruction=GROUNDING_SYSTEM_PROMPT
+            )
+            last_err = None
+            for model_name in models_to_try:
+                try:
+                    response = client.models.generate_content(
+                        model=model_name,
+                        contents=prompt,
+                        config=config
+                    )
+                    if response and response.text:
+                        return response.text.strip()
+                except Exception as e:
+                    last_err = e
+                    continue
+            if last_err:
+                raise last_err
         except Exception as e:
             raise RuntimeError(f"Gemini API call failed: {str(e)}")
 
