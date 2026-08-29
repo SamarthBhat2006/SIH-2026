@@ -516,6 +516,18 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                         # ── Infographic: show visual PNG + text brief ──────────
                         if art_key == "infographic":
                             infographic_bytes = st.session_state.get("generated_infographic_bytes")
+                            if not infographic_bytes and content:
+                                try:
+                                    png_path = build_infographic_image(
+                                        content,
+                                        doc_title=st.session_state.get("source_name", "Operational_Brief.txt")
+                                    )
+                                    infographic_bytes = png_path.read_bytes()
+                                    st.session_state.generated_infographic_bytes = infographic_bytes
+                                    st.session_state.generated_infographic_filename = png_path.name
+                                except Exception:
+                                    pass
+
                             if infographic_bytes:
                                 col_c1, col_c2, col_c3 = st.columns([1.2, 1, 1])
                                 with col_c1:
