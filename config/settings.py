@@ -44,17 +44,21 @@ OUTPUT_TYPES = {
 AUDIENCE_OPTIONS = [
     "Executive",
     "Technical Team",
-    "Government/Official",
     "General Public",
+    "Security / Intelligence Analyst",
     "Social Media Audience",
+    "Government/Official",
 ]
 
 TONE_OPTIONS = [
     "Professional",
     "Formal",
-    "Concise",
+    "Simple",
+    "Engaging",
+    "Analytical",
     "Informative",
     "Urgent",
+    "Concise",
 ]
 
 DETAIL_LEVEL_OPTIONS = [
@@ -66,10 +70,47 @@ DETAIL_LEVEL_OPTIONS = [
 OBJECTIVE_OPTIONS = [
     "Inform",
     "Alert",
+    "Analyze",
+    "Engage",
     "Summarize",
     "Educate",
     "Recommend Action",
+    "Persuade",
 ]
+
+# Intelligent Default Profiles mapped to Target Audience
+AUDIENCE_PROFILES = {
+    "Executive": {
+        "tone": "Professional",
+        "detail": "Brief",
+        "objective": "Inform",
+    },
+    "Technical Team": {
+        "tone": "Professional",
+        "detail": "Detailed",
+        "objective": "Inform",
+    },
+    "General Public": {
+        "tone": "Simple",
+        "detail": "Standard",
+        "objective": "Inform",
+    },
+    "Security / Intelligence Analyst": {
+        "tone": "Formal",
+        "detail": "Detailed",
+        "objective": "Analyze",
+    },
+    "Social Media Audience": {
+        "tone": "Engaging",
+        "detail": "Brief",
+        "objective": "Engage",
+    },
+    "Government/Official": {
+        "tone": "Formal",
+        "detail": "Detailed",
+        "objective": "Inform",
+    },
+}
 
 # Sensitive Data Detection Regular Expressions
 SENSITIVE_PATTERNS = {

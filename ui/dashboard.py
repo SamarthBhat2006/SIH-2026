@@ -18,6 +18,7 @@ from config.settings import (
     TONE_OPTIONS,
     DETAIL_LEVEL_OPTIONS,
     OBJECTIVE_OPTIONS,
+    AUDIENCE_PROFILES,
     OUTPUT_TYPES,
     SAMPLE_DATA_DIR
 )
@@ -59,7 +60,38 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
     if "pipeline_stage" not in st.session_state:
         st.session_state.pipeline_stage = 0
 
-    # 1. Render Hero Banner with Floating Pink Coins
+    # Initialize Configuration State with Sensible Defaults
+    if "cfg_audience" not in st.session_state:
+        st.session_state.cfg_audience = "Executive"
+    if "cfg_tone" not in st.session_state:
+        st.session_state.cfg_tone = AUDIENCE_PROFILES["Executive"]["tone"]
+    if "cfg_detail" not in st.session_state:
+        st.session_state.cfg_detail = AUDIENCE_PROFILES["Executive"]["detail"]
+    if "cfg_objective" not in st.session_state:
+        st.session_state.cfg_objective = AUDIENCE_PROFILES["Executive"]["objective"]
+
+    # Initialize Output Selection State
+    if "chk_exec" not in st.session_state:
+        st.session_state.chk_exec = True
+    if "chk_adv" not in st.session_state:
+        st.session_state.chk_adv = True
+    if "chk_pres" not in st.session_state:
+        st.session_state.chk_pres = True
+    if "chk_link" not in st.session_state:
+        st.session_state.chk_link = True
+    if "chk_x" not in st.session_state:
+        st.session_state.chk_x = True
+
+    # Audience Change Callback for Automatic Profile Application
+    def on_audience_change():
+        selected_aud = st.session_state.cfg_audience
+        if selected_aud in AUDIENCE_PROFILES:
+            prof = AUDIENCE_PROFILES[selected_aud]
+            st.session_state.cfg_tone = prof["tone"]
+            st.session_state.cfg_detail = prof["detail"]
+            st.session_state.cfg_objective = prof["objective"]
+
+    # 1. Render Hero Banner
     render_hero_banner()
 
     # 2. Quick Demo Action Bar
@@ -169,29 +201,62 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-        # Settings Card
-        st.markdown('<div class="gumroad-box"><div class="gumroad-box-title">⚙️ 2. Configure Transformation</div>', unsafe_allow_html=True)
+        # Settings Card with Automatic Configuration Profile Badge
+        st.markdown('<div class="gumroad-box">', unsafe_allow_html=True)
+
+        curr_aud = st.session_state.cfg_audience
+        curr_prof = AUDIENCE_PROFILES.get(curr_aud, {})
+        is_default = (
+            st.session_state.cfg_tone == curr_prof.get("tone") and
+            st.session_state.cfg_detail == curr_prof.get("detail") and
+            st.session_state.cfg_objective == curr_prof.get("objective")
+        )
+        badge_html = f'<span class="cfg-auto-badge">✓ Recommended for {curr_aud}</span>' if is_default else '<span class="cfg-custom-badge">⚙️ Custom settings</span>'
+
+        st.markdown(f"""
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div class="gumroad-box-title" style="margin-bottom: 0;">⚙️ 2. Configure Transformation</div>
+            {badge_html}
+        </div>
+        """, unsafe_allow_html=True)
 
         cfg_col1, cfg_col2 = st.columns(2)
         with cfg_col1:
-            selected_audience = st.selectbox("Target Audience:", AUDIENCE_OPTIONS, index=0)
-            selected_detail = st.selectbox("Level of Detail:", DETAIL_LEVEL_OPTIONS, index=1)
+            st.selectbox(
+                "Target Audience:",
+                AUDIENCE_OPTIONS,
+                key="cfg_audience",
+                on_change=on_audience_change
+            )
+            st.selectbox(
+                "Level of Detail:",
+                DETAIL_LEVEL_OPTIONS,
+                key="cfg_detail"
+            )
         with cfg_col2:
-            selected_tone = st.selectbox("Tone:", TONE_OPTIONS, index=0)
-            selected_objective = st.selectbox("Objective:", OBJECTIVE_OPTIONS, index=0)
+            st.selectbox(
+                "Tone:",
+                TONE_OPTIONS,
+                key="cfg_tone"
+            )
+            st.selectbox(
+                "Objective:",
+                OBJECTIVE_OPTIONS,
+                key="cfg_objective"
+            )
 
-        # Target Outputs
+        # Target Outputs (100% full-row clickable checkboxes)
         st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
-        st.markdown("<div style='font-weight:700; font-size:0.95rem; color:#000000; margin-bottom: 0.5rem;'>3. Target Formats (Multi-Output)</div>", unsafe_allow_html=True)
+        st.markdown("<div style='font-weight:700; font-size:0.95rem; color:#000000; margin-bottom: 0.75rem;'>3. Target Formats (Multi-Output)</div>", unsafe_allow_html=True)
 
         c_opt1, c_opt2 = st.columns(2)
         with c_opt1:
-            chk_exec = st.checkbox("Executive Summary", value=True)
-            chk_adv = st.checkbox("Cybersecurity Advisory", value=True)
-            chk_pres = st.checkbox("Presentation Deck", value=True)
+            chk_exec = st.checkbox("📋 Executive Summary", key="chk_exec")
+            chk_adv = st.checkbox("🚨 Cybersecurity Advisory", key="chk_adv")
+            chk_pres = st.checkbox("📊 Presentation Deck", key="chk_pres")
         with c_opt2:
-            chk_link = st.checkbox("LinkedIn Post", value=True)
-            chk_x = st.checkbox("X / Twitter Thread", value=True)
+            chk_link = st.checkbox("💼 LinkedIn Post", key="chk_link")
+            chk_x = st.checkbox("🧵 X / Twitter Thread", key="chk_x")
 
         selected_outputs = []
         if chk_exec: selected_outputs.append("executive_summary")
@@ -217,10 +282,10 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                 st.warning("Please select at least one output format.")
             else:
                 config_meta = {
-                    "audience": selected_audience,
-                    "tone": selected_tone,
-                    "detail": selected_detail,
-                    "objective": selected_objective
+                    "audience": st.session_state.cfg_audience,
+                    "tone": st.session_state.cfg_tone,
+                    "detail": st.session_state.cfg_detail,
+                    "objective": st.session_state.cfg_objective
                 }
 
                 progress_bar = st.progress(0, text="Initiating Transformation...")

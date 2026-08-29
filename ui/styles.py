@@ -401,7 +401,7 @@ def get_custom_css() -> str:
         flex-shrink: 0;
     }
 
-    /* === INPUTS === */
+    /* === INPUTS & SELECTBOXES === */
     .stTextArea textarea,
     .stTextInput input {
         background-color: var(--color-paper-white) !important;
@@ -418,6 +418,93 @@ def get_custom_css() -> str:
         border-color: var(--color-ink-black) !important;
         box-shadow: none !important;
         outline: none !important;
+    }
+
+    div[data-testid="stSelectbox"] div[data-baseweb="select"] {
+        background-color: var(--color-paper-white) !important;
+        border: 1px solid var(--color-hairline) !important;
+        border-radius: var(--radius-input) !important;
+        cursor: pointer !important;
+        transition: border-color 0.15s ease !important;
+    }
+    div[data-testid="stSelectbox"] div[data-baseweb="select"]:hover {
+        border-color: var(--color-ink-black) !important;
+    }
+
+    /* === CHECKBOXES — 100% FULL ROW CLICKABLE CARDS === */
+    div[data-testid="stCheckbox"] {
+        width: 100% !important;
+        margin-bottom: 10px !important;
+    }
+
+    div[data-testid="stCheckbox"] > label {
+        display: flex !important;
+        align-items: center !important;
+        width: 100% !important;
+        padding: 12px 16px !important;
+        background-color: var(--color-paper-white) !important;
+        border: 1.5px solid var(--color-hairline) !important;
+        border-radius: var(--radius-card) !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease-in-out !important;
+        user-select: none !important;
+        min-height: 48px !important;
+        box-sizing: border-box !important;
+        pointer-events: auto !important;
+    }
+
+    div[data-testid="stCheckbox"] > label:hover {
+        border-color: var(--color-ink-black) !important;
+        background-color: #fafaf8 !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 2px 2px 0 var(--color-ink-black) !important;
+    }
+
+    div[data-testid="stCheckbox"]:has(input:checked) > label {
+        border-color: var(--color-ink-black) !important;
+        background-color: #ffffff !important;
+        box-shadow: 2px 2px 0 var(--color-ink-black) !important;
+    }
+
+    /* Pass through pointer events inside the label so entire rectangular card triggers toggle */
+    div[data-testid="stCheckbox"] label * {
+        pointer-events: none !important;
+    }
+
+    div[data-testid="stCheckbox"] label div[data-testid="stMarkdownContainer"] p {
+        font-weight: 700 !important;
+        color: var(--color-ink-black) !important;
+        font-size: 0.95rem !important;
+        margin: 0 0 0 8px !important;
+    }
+
+    /* === CONFIGURATION PROFILE BADGES === */
+    .cfg-auto-badge {
+        background-color: #e6f9ed;
+        border: 1px solid #73d196;
+        color: #137333;
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        letter-spacing: -0.01em;
+    }
+
+    .cfg-custom-badge {
+        background-color: var(--color-canvas-cream);
+        border: 1px solid var(--color-hairline);
+        color: #575756;
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        letter-spacing: -0.01em;
     }
 
     /* === ALERT BOXES === */
