@@ -433,5 +433,27 @@
       "security_status": "CLEAN"
     },
     "hash": "cc82746dda8423c5bf2862a44742fc157da617db5dbea4763ba26d0ba4efd43d"
+  },
+  {
+    "index": 19,
+    "timestamp": 1787991300.4181688,
+    "previous_hash": "cc82746dda8423c5bf2862a44742fc157da617db5dbea4763ba26d0ba4efd43d",
+    "data": {
+      "transformation_id": "DOC-91300",
+      "source_name": "Threat_Advisory_VPN_ZeroDay.txt",
+      "source_hash": "4b52b213b39fc8286d99025061b4cbb330e4f8481c83d19930bd732d8d9517a5",
+      "output_hashes": {
+        "presentation": "574abeb6a3ca7b3084f380f0c6ff6278fe5dce89776d0f554f84bbc56716a513"
+      },
+      "artefact_count": 1,
+      "config": {
+        "audience": "Executive",
+        "tone": "Professional",
+        "detail": "Brief",
+        "objective": "Inform"
+      },
+      "security_status": "NOTICE_SENSITIVE_DATA"
+    },
+    "hash": "faaa718656b3c7f6fb3133d855860c6348ce9539d7c2ae2688c00a922ca73354"
   }
 ]

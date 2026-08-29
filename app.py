@@ -24,8 +24,12 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Inject Custom Gumroad Styles
-st.markdown(get_custom_css(), unsafe_allow_html=True)
+# Initialize Theme State
+if "theme" not in st.session_state:
+    st.session_state.theme = "light"
+
+# Inject Custom Design System Styles (Light / Dark)
+st.markdown(get_custom_css(st.session_state.theme), unsafe_allow_html=True)
 
 # Initialize Persistent Singletons
 @st.cache_resource
@@ -45,7 +49,7 @@ if "nav_choice" not in st.session_state:
     st.session_state.nav_choice = "Dashboard"
 
 # Sidebar Navigation (Interactive full-width buttons)
-st.sidebar.markdown("<div style='font-weight: 800; font-size: 0.95rem; color: #000000; margin: 0.5rem 0 0.85rem 0;'>Navigation</div>", unsafe_allow_html=True)
+st.sidebar.markdown("<div style='font-weight: 800; font-size: 0.95rem; color: var(--color-ink-black); margin: 0.5rem 0 0.85rem 0;'>Navigation</div>", unsafe_allow_html=True)
 
 nav_items_sidebar = [
     ("Dashboard", "⚡ Dashboard"),
@@ -67,8 +71,8 @@ for view_key, label in nav_items_sidebar:
             st.session_state.nav_choice = view_key
             st.rerun()
 
-st.sidebar.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1.25rem 0;'>", unsafe_allow_html=True)
-st.sidebar.markdown("<div style='font-weight: 800; font-size: 0.85rem; color: #000000; margin-bottom: 0.5rem;'>System Status</div>", unsafe_allow_html=True)
+st.sidebar.markdown("<hr style='border:0; border-top:1px solid var(--color-hairline); margin: 1.25rem 0;'>", unsafe_allow_html=True)
+st.sidebar.markdown("<div style='font-weight: 800; font-size: 0.85rem; color: var(--color-ink-black); margin-bottom: 0.5rem;'>System Status</div>", unsafe_allow_html=True)
 
 summary = ledger.get_chain_summary()
 status_badge = "🟢 Valid" if summary["is_valid"] else "🔴 Tampered"

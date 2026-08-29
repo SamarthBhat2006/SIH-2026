@@ -76,8 +76,8 @@ def render_ledger_view(ledger: BlockchainLedger) -> None:
             st.markdown(f"""
             <div style="padding: 0.5rem 0;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                    <strong style="color: #000000; font-size: 1.05rem;">Block #{block.index}</strong>
-                    <span style="color: #575756; font-size: 0.82rem;">Timestamp: {block_time_str}</span>
+                    <strong style="color: var(--color-ink-black); font-size: 1.05rem;">Block #{block.index}</strong>
+                    <span style="color: var(--color-muted, #a1a1aa); font-size: 0.82rem;">Timestamp: {block_time_str}</span>
                 </div>
             </div>
             """, unsafe_allow_html=True)

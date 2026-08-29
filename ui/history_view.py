@@ -18,10 +18,10 @@ def render_history_view(history_db: TransformationHistoryDB) -> None:
 
     if not records:
         st.markdown("""
-        <div class="paper-card" style="text-align: center; padding: 2.5rem; color: #575756;">
+        <div class="gumroad-box" style="text-align: center; padding: 2.5rem; color: var(--color-muted, #a1a1aa);">
             <div style="font-size: 2rem; margin-bottom: 0.5rem;">📂</div>
-            <div style="font-weight: 700; color: #000000;">No Transformation History Found</div>
-            <div style="font-size: 0.88rem; margin-top: 0.25rem;">Transform a document in the Dashboard to record your first cryptographic audit log.</div>
+            <div style="font-weight: 700; color: var(--color-ink-black);">No Transformation History Found</div>
+            <div style="font-size: 0.88rem; margin-top: 0.25rem; color: var(--color-graphite);">Transform a document in the Dashboard to record your first cryptographic audit log.</div>
         </div>
         """, unsafe_allow_html=True)
         return

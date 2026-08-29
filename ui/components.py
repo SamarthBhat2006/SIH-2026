@@ -12,8 +12,8 @@ import streamlit as st
 from typing import Dict, List, Any, Optional
 
 def render_top_navbar(current_view: str = "Dashboard") -> None:
-    """Renders an interactive top navigation bar with brand, active nav buttons, and NTRO Core badge."""
-    col_brand, col_nav, col_badge = st.columns([2.4, 5.2, 1.8])
+    """Renders the top navbar with brand, theme toggle button, and NTRO Core badge."""
+    col_brand, col_spacer, col_actions = st.columns([3.5, 3.5, 3.0])
 
     with col_brand:
         st.markdown("""
@@ -22,32 +22,23 @@ def render_top_navbar(current_view: str = "Dashboard") -> None:
         </div>
         """, unsafe_allow_html=True)
 
-    with col_nav:
-        nav_cols = st.columns(4)
-        nav_items = ["Dashboard", "History", "Ledger", "About"]
-        for idx, item in enumerate(nav_items):
-            with nav_cols[idx]:
-                is_active = (current_view == item)
-                btn_type = "primary" if is_active else "secondary"
-                if st.button(
-                    item,
-                    key=f"top_nav_{item.lower()}",
-                    type=btn_type,
-                    use_container_width=True
-                ):
-                    if st.session_state.get("nav_choice") != item:
-                        st.session_state.nav_choice = item
-                        st.rerun()
-                st.markdown('<span class="top-nav-btn"></span>', unsafe_allow_html=True)
+    with col_actions:
+        c_theme, c_badge = st.columns([1.4, 1.1])
+        with c_theme:
+            current_theme = st.session_state.get("theme", "light")
+            theme_btn_label = "🌙 Dark Mode" if current_theme == "light" else "☀️ Light Mode"
+            if st.button(theme_btn_label, key="btn_theme_toggle", use_container_width=True):
+                st.session_state.theme = "dark" if current_theme == "light" else "light"
+                st.rerun()
 
-    with col_badge:
-        st.markdown("""
-        <div style="text-align: right; padding-top: 5px;">
-            <span style="font-size: 0.85rem; font-weight: 700; color: #000000; padding: 7px 16px; background-color: #ff90e8; border: 1.5px solid #000000; border-radius: 9999px; display: inline-block;">NTRO Core</span>
-        </div>
-        """, unsafe_allow_html=True)
+        with c_badge:
+            st.markdown("""
+            <div style="text-align: right; padding-top: 3px;">
+                <span class="ntro-core-badge" style="font-size: 0.82rem; font-weight: 700; color: #000000; padding: 6px 14px; background-color: #ff90e8; border: 1.5px solid #000000; border-radius: 9999px; display: inline-block;">NTRO Core</span>
+            </div>
+            """, unsafe_allow_html=True)
 
-    st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 0.75rem 0 1.75rem 0;'>", unsafe_allow_html=True)
+    st.markdown("<hr style='border:0; border-top:1px solid var(--color-hairline); margin: 0.75rem 0 1.75rem 0;'>", unsafe_allow_html=True)
 
 def render_hero_banner() -> None:
     """Renders the clean Gumroad hero banner with project-relevant sticker badges."""
@@ -110,8 +101,8 @@ def render_security_badges(security_report: Dict[str, Any]) -> None:
         matched_preview = ", ".join([f"'{s['matched_text']}'" for s in sigs[:3]])
         html = f"""<div class="alert-vermillion-box">
 <div style="font-weight: 800; color: #dc341e; font-size: 0.95rem; margin-bottom: 0.3rem;">⚠️ Potential Prompt Injection Detected ({inj.get('risk_level')} Risk)</div>
-<div style="font-size: 0.88rem; color: #242423; margin-bottom: 0.35rem;">Adversarial instructions flagged in source text: <strong>{matched_preview}</strong></div>
-<div style="font-size: 0.82rem; color: #575756;">{inj.get('mitigation_note')}</div>
+<div style="font-size: 0.88rem; color: var(--color-graphite); margin-bottom: 0.35rem;">Adversarial instructions flagged in source text: <strong>{matched_preview}</strong></div>
+<div style="font-size: 0.82rem; color: var(--color-muted, #a1a1aa);">{inj.get('mitigation_note')}</div>
 </div>"""
         st.markdown(html, unsafe_allow_html=True)
 
@@ -119,16 +110,16 @@ def render_security_badges(security_report: Dict[str, Any]) -> None:
         findings = sens.get("findings_by_category", {})
         categories = list(findings.keys())
         html = f"""<div class="alert-yellow-box">
-<div style="font-weight: 800; color: #946c00; font-size: 0.95rem; margin-bottom: 0.3rem;">🔍 Sensitive Information Patterns Detected ({sens.get('total_sensitive_items')} Matches)</div>
-<div style="font-size: 0.88rem; color: #242423; margin-bottom: 0.35rem;">Detected patterns: <strong>{', '.join(categories)}</strong></div>
-<div style="font-size: 0.82rem; color: #575756;">{sens.get('advisory_note')}</div>
+<div style="font-weight: 800; color: #d97706; font-size: 0.95rem; margin-bottom: 0.3rem;">🔍 Sensitive Information Patterns Detected ({sens.get('total_sensitive_items')} Matches)</div>
+<div style="font-size: 0.88rem; color: var(--color-graphite); margin-bottom: 0.35rem;">Detected patterns: <strong>{', '.join(categories)}</strong></div>
+<div style="font-size: 0.82rem; color: var(--color-muted, #a1a1aa);">{sens.get('advisory_note')}</div>
 </div>"""
         st.markdown(html, unsafe_allow_html=True)
 
 def render_hash_badge(hash_val: str, label: str = "SHA-256 Digest") -> None:
     """Renders a formatted cryptographic hash badge."""
     html = f"""<div style="margin: 0.4rem 0;">
-<span style="font-size: 0.8rem; color: #242423; font-weight: 700;">{label}: </span>
+<span style="font-size: 0.8rem; color: var(--color-graphite); font-weight: 700;">{label}: </span>
 <span class="gumroad-hash">{hash_val}</span>
 </div>"""
     st.markdown(html, unsafe_allow_html=True)
@@ -137,58 +128,53 @@ def parse_slides_markdown(content: str) -> List[Dict[str, Any]]:
     """Parses markdown generated for slides into structured slide objects."""
     slide_blocks = re.split(r"(?:^|\n)---+(?:\n|$)|(?:^|\n)##\s+SLIDE\s+\d+[\s:—–-]+", content)
     slides = []
-
+    
     for block in slide_blocks:
-        clean = block.strip()
-        if not clean:
+        block = block.strip()
+        if not block:
             continue
-
-        lines = clean.split("\n")
-        raw_title = lines[0].replace("##", "").replace("SLIDE", "").strip()
-        # Clean leading numbers, colons, or dashes from slide title
-        raw_title = re.sub(r"^\d+[\s:—–-]+", "", raw_title).strip()
-        if raw_title.startswith(":") or raw_title.startswith("-") or raw_title.startswith("—"):
-            raw_title = raw_title[1:].strip()
-        if not raw_title:
-            raw_title = "Presentation Slide"
-
-        notes = "No speaker notes provided."
+            
+        lines = block.split("\n")
+        title = "Executive Briefing"
         body_lines = []
+        notes = "Deliver key operational insights clearly and concisely."
+        
         in_notes = False
         notes_lines = []
-
-        for line in lines[1:]:
-            if "speaker notes:" in line.lower() or "**speaker notes:**" in line.lower() or "speaker notes" in line.lower():
+        
+        for line in lines:
+            if "speaker notes:" in line.lower() or "presenter notes:" in line.lower() or "**speaker notes:**" in line.lower() or "**presenter notes:**" in line.lower():
                 in_notes = True
                 continue
+                
             if in_notes:
                 notes_lines.append(line)
             else:
-                body_lines.append(line)
-
+                if line.startswith("#"):
+                    title = line.lstrip("#").strip()
+                elif line.startswith("**Title:**") or line.startswith("Title:"):
+                    title = line.replace("**Title:**", "").replace("Title:", "").strip()
+                else:
+                    body_lines.append(line)
+                    
         if notes_lines:
             notes = "\n".join(notes_lines).strip()
-
+            
+        body = "\n".join(body_lines).strip()
         slides.append({
-            "title": raw_title,
-            "body": "\n".join(body_lines).strip(),
+            "title": title,
+            "body": body,
             "notes": notes
         })
+        
+    return slides if slides else [{"title": "Presentation Overview", "body": content, "notes": "Standard briefing notes."}]
 
-    if not slides:
-        slides = [{
-            "title": "Presentation Overview",
-            "body": content,
-            "notes": "Generated directly from source."
-        }]
-    return slides
-
-def render_interactive_slide_deck(presentation_text: str, key_suffix: str = "deck") -> None:
-    """Renders an interactive slide-by-slide presentation deck viewer."""
-    slides = parse_slides_markdown(presentation_text)
+def render_interactive_slide_deck(slides_content: str, key_suffix: str = "main") -> None:
+    """Renders an interactive pagination-based slide deck carousel."""
+    slides = parse_slides_markdown(slides_content)
     total_slides = len(slides)
     
-    state_key = f"slide_idx_{key_suffix}"
+    state_key = f"current_slide_{key_suffix}"
     if state_key not in st.session_state:
         st.session_state[state_key] = 0
 
@@ -201,7 +187,7 @@ def render_interactive_slide_deck(presentation_text: str, key_suffix: str = "dec
             st.rerun()
             
     with col_num:
-        st.markdown(f"<div style='text-align: center; font-weight: 800; color: #000000; padding-top: 8px; font-size: 0.92rem;'>SLIDE {current_idx + 1} OF {total_slides}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='text-align: center; font-weight: 800; color: var(--color-ink-black); padding-top: 8px; font-size: 0.92rem;'>SLIDE {current_idx + 1} OF {total_slides}</div>", unsafe_allow_html=True)
         
     with col_next:
         if st.button("Next →", key=f"next_{key_suffix}", disabled=(current_idx == total_slides - 1)):
@@ -211,14 +197,14 @@ def render_interactive_slide_deck(presentation_text: str, key_suffix: str = "dec
     slide = slides[current_idx]
     st.markdown(f"""<div class="slide-deck-box">
 <div class="slide-deck-title">📄 {slide['title']}</div>
-<div style="font-size: 0.98rem; color: #242423; line-height: 1.65;">
+<div style="font-size: 0.98rem; color: var(--color-graphite); line-height: 1.65;">
 """, unsafe_allow_html=True)
     
     st.markdown(slide['body'])
     
     st.markdown(f"""</div>
 <div class="slide-deck-notes">
-<strong style="color: #000000; font-weight: 800;">🎙️ Presenter Notes:</strong><br>
+<strong style="color: var(--color-ink-black); font-weight: 800;">🎙️ Presenter Notes:</strong><br>
 {slide['notes']}
 </div>
 </div>""", unsafe_allow_html=True)

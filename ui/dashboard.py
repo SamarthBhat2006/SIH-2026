@@ -245,8 +245,8 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
             )
 
         # Target Outputs (100% full-row clickable checkboxes)
-        st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
-        st.markdown("<div style='font-weight:700; font-size:0.95rem; color:#000000; margin-bottom: 0.75rem;'>3. Target Formats (Multi-Output)</div>", unsafe_allow_html=True)
+        st.markdown("<hr style='border:0; border-top:1px solid var(--color-hairline); margin: 1rem 0;'>", unsafe_allow_html=True)
+        st.markdown("<div style='font-weight:700; font-size:0.95rem; color:var(--color-ink-black); margin-bottom: 0.75rem;'>3. Target Formats (Multi-Output)</div>", unsafe_allow_html=True)
 
         c_opt1, c_opt2 = st.columns(2)
         with c_opt1:
@@ -364,10 +364,10 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
         st.markdown('<div class="gumroad-box"><div class="gumroad-box-title">📤 Generated Communication Artefacts</div>', unsafe_allow_html=True)
 
         if not st.session_state.transformation_results:
-            st.markdown("""<div style="text-align: center; padding: 3.5rem 1.5rem; color: #575756;">
+            st.markdown("""<div style="text-align: center; padding: 3.5rem 1.5rem; color: var(--color-muted, #a1a1aa);">
 <div style="font-size: 2.5rem; margin-bottom: 0.6rem;">📄</div>
-<div style="font-weight: 800; color: #000000; font-size: 1.15rem; margin-bottom: 0.35rem;">Ready to Generate</div>
-<div style="font-size: 0.92rem; max-width: 360px; margin: 0 auto; color: #575756; line-height: 1.5;">Ingest source content on the left, pick target parameters, and click <strong>Transform Content</strong> to produce 5 grounded artefacts simultaneously.</div>
+<div style="font-weight: 800; color: var(--color-ink-black); font-size: 1.15rem; margin-bottom: 0.35rem;">Ready to Generate</div>
+<div style="font-size: 0.92rem; max-width: 360px; margin: 0 auto; color: var(--color-graphite); line-height: 1.5;">Ingest source content on the left, pick target parameters, and click <strong>Transform Content</strong> to produce 5 grounded artefacts simultaneously.</div>
 </div>""", unsafe_allow_html=True)
 
         else:
@@ -377,9 +377,9 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
 
             # Top Ledger Anchor Badge
             if block:
-                st.markdown(f"""<div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0 1rem 0; border-bottom: 1px solid #d1d5dc; margin-bottom: 1rem;">
-<span style="background-color: #f4f4f0; border: 1px solid #000000; padding: 4px 12px; border-radius: 9999px; font-size: 0.8rem; font-weight: 700; color: #000000;">✓ Anchored in Block #{block.index}</span>
-<span style="font-size: 0.78rem; color: #575756; font-family: monospace;">Prev: {block.previous_hash[:12]}...</span>
+                st.markdown(f"""<div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0 1rem 0; border-bottom: 1px solid var(--color-hairline); margin-bottom: 1rem;">
+<span style="background-color: var(--color-canvas-cream); border: 1px solid var(--color-hairline); padding: 4px 12px; border-radius: 9999px; font-size: 0.8rem; font-weight: 700; color: var(--color-ink-black);">✓ Anchored in Block #{block.index}</span>
+<span style="font-size: 0.78rem; color: var(--color-muted, #a1a1aa); font-family: monospace;">Prev: {block.previous_hash[:12]}...</span>
 </div>""", unsafe_allow_html=True)
 
             # Output Tabs

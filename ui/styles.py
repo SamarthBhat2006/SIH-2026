@@ -7,20 +7,42 @@ from the spec: #f4f4f0 canvas, Inter as ABC Favorit substitute, negative trackin
 at every type size, 4px radii on inputs/buttons, 16-24px on cards, zero shadows.
 """
 
-def get_custom_css() -> str:
-    """Returns CSS exactly matching the Gumroad style reference."""
-    return """
+def get_custom_css(theme: str = "light") -> str:
+    """Returns CSS matching the Gumroad style reference in either light or dark mode."""
+    is_dark = (theme.lower() == "dark")
+
+    canvas_cream = "#0e0e11" if is_dark else "#f4f4f0"
+    paper_white = "#191920" if is_dark else "#ffffff"
+    ink_black = "#ffffff" if is_dark else "#000000"
+    graphite = "#e4e4e7" if is_dark else "#242423"
+    hairline = "#33333d" if is_dark else "#d1d5dc"
+    sidebar_bg = "#131317" if is_dark else "#ecece8"
+    input_bg = "#22222a" if is_dark else "#ffffff"
+
+    btn_primary_bg = "#ffffff" if is_dark else "#000000"
+    btn_primary_text = "#000000" if is_dark else "#ffffff"
+
+    cfg_auto_bg = "#143823" if is_dark else "#e6f9ed"
+    cfg_auto_border = "#1e5a36" if is_dark else "#73d196"
+    cfg_auto_text = "#4ade80" if is_dark else "#137333"
+
+    alert_red_bg = "#2b1414" if is_dark else "#fff0ee"
+    alert_red_border = "#742a2a" if is_dark else "#f8b4ab"
+    alert_yellow_bg = "#2a2412" if is_dark else "#fffbe6"
+    alert_yellow_border = "#745f20" if is_dark else "#ffe58f"
+
+    css = """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,700;0,14..32,900&family=JetBrains+Mono:wght@400;600;700&display=swap');
 
     /* === DESIGN TOKENS === */
     :root {
         /* Colors */
-        --color-canvas-cream:       #f4f4f0;
-        --color-paper-white:        #ffffff;
-        --color-ink-black:          #000000;
-        --color-graphite:           #242423;
-        --color-hairline:           #d1d5dc;
+        --color-canvas-cream:       __CANVAS_CREAM__;
+        --color-paper-white:        __PAPER_WHITE__;
+        --color-ink-black:          __INK_BLACK__;
+        --color-graphite:           __GRAPHITE__;
+        --color-hairline:           __HAIRLINE__;
         --color-coin-pink:          #ff90e8;
         --color-highlight-yellow:   #ffc900;
         --color-highlight-lime:     #f1f333;
@@ -88,7 +110,7 @@ def get_custom_css() -> str:
 
     /* === SIDEBAR — collapsible with clean styling === */
     [data-testid="stSidebar"] {
-        background-color: #ecece8 !important;
+        background-color: __SIDEBAR_BG__ !important;
         border-right: 1px solid var(--color-hairline) !important;
     }
 
@@ -110,21 +132,21 @@ def get_custom_css() -> str:
         z-index: 100 !important;
     }
 
-    /* === SIDEBAR NAVIGATION BUTTONS === */
+    /* === SIDEBAR NAVIGATION BUTTONS (Compact & Elegant) === */
     [data-testid="stSidebar"] [data-testid="stButton"] {
-        margin-bottom: 6px !important;
+        margin-bottom: 4px !important;
         width: 100% !important;
     }
 
     [data-testid="stSidebar"] [data-testid="stButton"] button {
         width: 100% !important;
-        padding: 8px 14px !important;
-        height: 38px !important;
-        min-height: 38px !important;
-        font-size: 0.88rem !important;
+        padding: 5px 12px !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        font-size: 0.82rem !important;
         font-weight: 600 !important;
         letter-spacing: -0.01em !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: flex-start !important;
@@ -143,7 +165,7 @@ def get_custom_css() -> str:
 
     [data-testid="stSidebar"] [data-testid="stButton"] button[kind="secondary"]:hover,
     [data-testid="stSidebar"] [data-testid="stButton"] button[data-testid="baseButton-secondary"]:hover {
-        background-color: #ffffff !important;
+        background-color: var(--color-paper-white) !important;
         border-color: var(--color-ink-black) !important;
         color: var(--color-ink-black) !important;
         transform: translateY(-1px) !important;
@@ -160,8 +182,7 @@ def get_custom_css() -> str:
 
     [data-testid="stSidebar"] [data-testid="stButton"] button[kind="primary"]:hover,
     [data-testid="stSidebar"] [data-testid="stButton"] button[data-testid="baseButton-primary"]:hover {
-        background-color: #222222 !important;
-        color: var(--color-paper-white) !important;
+        opacity: 0.88 !important;
     }
 
     /* === TOP NAV BAR === */
@@ -421,20 +442,25 @@ def get_custom_css() -> str:
     }
 
     /* === BUTTONS === */
-    /* Filled Black — Primary */
+    /* Filled Black/White — Primary */
     .stButton > button[kind="primary"],
     button[data-testid="baseButton-primary"] {
-        background-color: var(--color-ink-black) !important;
-        color: var(--color-paper-white) !important;
-        border: none !important;
+        background-color: __BTN_PRIMARY_BG__ !important;
+        color: __BTN_PRIMARY_TEXT__ !important;
+        border: 1.5px solid var(--color-ink-black) !important;
         border-radius: var(--radius-btn) !important;
         padding: 12px 24px !important;
         font-size: var(--text-body-sm) !important;
-        font-weight: 500 !important;
+        font-weight: 700 !important;
         letter-spacing: -0.02em !important;
         cursor: pointer !important;
         box-shadow: none !important;
         transition: opacity 0.15s ease !important;
+    }
+    .stButton > button[kind="primary"] *,
+    button[data-testid="baseButton-primary"] * {
+        color: __BTN_PRIMARY_TEXT__ !important;
+        font-weight: 700 !important;
     }
     .stButton > button[kind="primary"]:hover,
     button[data-testid="baseButton-primary"]:hover {
@@ -442,18 +468,26 @@ def get_custom_css() -> str:
     }
 
     /* Ghost Outline — Secondary */
-    .stButton > button {
-        background-color: transparent !important;
+    .stButton > button[kind="secondary"],
+    button[data-testid="baseButton-secondary"],
+    .stButton > button:not([kind="primary"]) {
+        background-color: var(--color-paper-white) !important;
         color: var(--color-ink-black) !important;
         border: 1px solid var(--color-hairline) !important;
         border-radius: var(--radius-btn) !important;
         padding: 12px 24px !important;
         font-size: var(--text-body-sm) !important;
-        font-weight: 500 !important;
+        font-weight: 600 !important;
         letter-spacing: -0.02em !important;
         cursor: pointer !important;
         box-shadow: none !important;
         transition: border-color 0.15s ease !important;
+    }
+    .stButton > button[kind="secondary"] *,
+    button[data-testid="baseButton-secondary"] *,
+    .stButton > button:not([kind="primary"]) * {
+        color: var(--color-ink-black) !important;
+        font-weight: 600 !important;
     }
     .stButton > button:hover {
         border-color: var(--color-ink-black) !important;
@@ -526,14 +560,19 @@ def get_custom_css() -> str:
     /* === INPUTS & SELECTBOXES === */
     .stTextArea textarea,
     .stTextInput input {
-        background-color: var(--color-paper-white) !important;
-        color: var(--color-graphite) !important;
+        background-color: __INPUT_BG__ !important;
+        color: var(--color-ink-black) !important;
         border: 1px solid var(--color-hairline) !important;
         border-radius: var(--radius-input) !important;
         padding: 12px 16px !important;
         font-size: var(--text-body-sm) !important;
         font-family: var(--font-main) !important;
         letter-spacing: -0.064px !important;
+    }
+    .stTextArea textarea::placeholder,
+    .stTextInput input::placeholder {
+        color: var(--color-muted, #71717a) !important;
+        opacity: 0.7 !important;
     }
     .stTextArea textarea:focus,
     .stTextInput input:focus {
@@ -542,12 +581,23 @@ def get_custom_css() -> str:
         outline: none !important;
     }
 
-    div[data-testid="stSelectbox"] div[data-baseweb="select"] {
-        background-color: var(--color-paper-white) !important;
-        border: 1px solid var(--color-hairline) !important;
+    div[data-testid="stSelectbox"] div[data-baseweb="select"],
+    div[data-testid="stSelectbox"] div[data-baseweb="select"] > div,
+    div[data-testid="stSelectbox"] div[data-baseweb="select"] div {
+        background-color: __INPUT_BG__ !important;
+        color: var(--color-ink-black) !important;
+        border-color: var(--color-hairline) !important;
         border-radius: var(--radius-input) !important;
         cursor: pointer !important;
         transition: border-color 0.15s ease !important;
+    }
+    div[data-testid="stSelectbox"] div[data-baseweb="select"] * {
+        color: var(--color-ink-black) !important;
+        font-weight: 500 !important;
+    }
+    div[data-testid="stSelectbox"] svg {
+        fill: var(--color-ink-black) !important;
+        color: var(--color-ink-black) !important;
     }
     div[data-testid="stSelectbox"] div[data-baseweb="select"]:hover {
         border-color: var(--color-ink-black) !important;
@@ -577,14 +627,14 @@ def get_custom_css() -> str:
 
     div[data-testid="stCheckbox"] > label:hover {
         border-color: var(--color-ink-black) !important;
-        background-color: #fafaf8 !important;
+        background-color: var(--color-canvas-cream) !important;
         transform: translateY(-1px) !important;
         box-shadow: 2px 2px 0 var(--color-ink-black) !important;
     }
 
     div[data-testid="stCheckbox"]:has(input:checked) > label {
         border-color: var(--color-ink-black) !important;
-        background-color: #ffffff !important;
+        background-color: var(--color-paper-white) !important;
         box-shadow: 2px 2px 0 var(--color-ink-black) !important;
     }
 
@@ -593,7 +643,9 @@ def get_custom_css() -> str:
         pointer-events: none !important;
     }
 
-    div[data-testid="stCheckbox"] label div[data-testid="stMarkdownContainer"] p {
+    div[data-testid="stCheckbox"] label div[data-testid="stMarkdownContainer"] p,
+    div[data-testid="stCheckbox"] label span,
+    div[data-testid="stCheckbox"] label div {
         font-weight: 700 !important;
         color: var(--color-ink-black) !important;
         font-size: 0.95rem !important;
@@ -602,9 +654,9 @@ def get_custom_css() -> str:
 
     /* === CONFIGURATION PROFILE BADGES === */
     .cfg-auto-badge {
-        background-color: #e6f9ed;
-        border: 1px solid #73d196;
-        color: #137333;
+        background-color: __CFG_AUTO_BG__ !important;
+        border: 1px solid __CFG_AUTO_BORDER__ !important;
+        color: __CFG_AUTO_TEXT__ !important;
         font-size: 0.78rem;
         font-weight: 700;
         padding: 3px 10px;
@@ -614,11 +666,14 @@ def get_custom_css() -> str:
         gap: 4px;
         letter-spacing: -0.01em;
     }
+    .cfg-auto-badge * {
+        color: __CFG_AUTO_TEXT__ !important;
+    }
 
     .cfg-custom-badge {
         background-color: var(--color-canvas-cream);
         border: 1px solid var(--color-hairline);
-        color: #575756;
+        color: var(--color-graphite);
         font-size: 0.78rem;
         font-weight: 600;
         padding: 3px 10px;
@@ -628,11 +683,14 @@ def get_custom_css() -> str:
         gap: 4px;
         letter-spacing: -0.01em;
     }
+    .cfg-custom-badge * {
+        color: var(--color-graphite) !important;
+    }
 
     /* === ALERT BOXES === */
     .alert-vermillion-box {
-        background-color: #fff0ee;
-        border: 1px solid #f8b4ab;
+        background-color: __ALERT_RED_BG__;
+        border: 1px solid __ALERT_RED_BORDER__;
         border-left: 4px solid var(--color-highlight-vermillion);
         border-radius: var(--radius-input);
         padding: var(--spacing-16);
@@ -640,8 +698,8 @@ def get_custom_css() -> str:
     }
 
     .alert-yellow-box {
-        background-color: #fffbe6;
-        border: 1px solid #ffe58f;
+        background-color: __ALERT_YELLOW_BG__;
+        border: 1px solid __ALERT_YELLOW_BORDER__;
         border-left: 4px solid var(--color-highlight-yellow);
         border-radius: var(--radius-input);
         padding: var(--spacing-16);
@@ -715,5 +773,98 @@ def get_custom_css() -> str:
         color: var(--color-graphite) !important;
         line-height: 1.5;
     }
+
+    /* === GLOBAL TEXT & WIDGET VISIBILITY IN DARK/LIGHT MODES === */
+    .stMarkdown p, .stMarkdown li, [data-testid="stWidgetLabel"] p {
+        color: var(--color-graphite) !important;
+    }
+
+    h1, h2, h3, h4, h5, h6, strong, b, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
+        color: var(--color-ink-black) !important;
+    }
+
+    /* Radio options */
+    div[data-testid="stRadio"] label p {
+        color: var(--color-ink-black) !important;
+        font-weight: 600 !important;
+    }
+
+    /* Form labels */
+    .stRadio label, .stSelectbox label, .stTextArea label, .stTextInput label, .stFileUploader label {
+        color: var(--color-ink-black) !important;
+        font-weight: 600 !important;
+    }
+
+    /* Expanders */
+    div[data-testid="stExpander"] {
+        background-color: var(--color-paper-white) !important;
+        border: 1px solid var(--color-hairline) !important;
+        border-radius: var(--radius-card) !important;
+    }
+    div[data-testid="stExpander"] summary span {
+        color: var(--color-ink-black) !important;
+        font-weight: 600 !important;
+    }
+
+    /* Metrics */
+    .metric-box {
+        background-color: var(--color-paper-white);
+        border: 1px solid var(--color-hairline);
+        border-radius: var(--radius-card);
+        padding: 1rem 1.25rem;
+        margin-bottom: 1rem;
+    }
+    .metric-value {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--color-ink-black) !important;
+    }
+    .metric-title {
+        font-size: 0.85rem;
+        color: var(--color-graphite) !important;
+    }
+
+    div[data-baseweb="popover"],
+    div[data-baseweb="menu"],
+    ul[role="listbox"],
+    li[role="option"] {
+        background-color: var(--color-paper-white) !important;
+        color: var(--color-graphite) !important;
+    }
+    li[role="option"]:hover {
+        background-color: var(--color-canvas-cream) !important;
+        color: var(--color-ink-black) !important;
+    }
+
+    /* Top right theme toggle button */
+    div[data-testid="stButton"]:has(button[key="btn_theme_toggle"]) button,
+    button[key="btn_theme_toggle"] {
+        height: 32px !important;
+        min-height: 32px !important;
+        padding: 4px 10px !important;
+        font-size: 0.82rem !important;
+        border-radius: 9999px !important;
+        font-weight: 700 !important;
+    }
     </style>
     """
+
+    return (
+        css
+        .replace("__CANVAS_CREAM__", canvas_cream)
+        .replace("__PAPER_WHITE__", paper_white)
+        .replace("__INK_BLACK__", ink_black)
+        .replace("__GRAPHITE__", graphite)
+        .replace("__HAIRLINE__", hairline)
+        .replace("__SIDEBAR_BG__", sidebar_bg)
+        .replace("__INPUT_BG__", input_bg)
+        .replace("__BTN_PRIMARY_BG__", btn_primary_bg)
+        .replace("__BTN_PRIMARY_TEXT__", btn_primary_text)
+        .replace("__CFG_AUTO_BG__", cfg_auto_bg)
+        .replace("__CFG_AUTO_BORDER__", cfg_auto_border)
+        .replace("__CFG_AUTO_TEXT__", cfg_auto_text)
+        .replace("__ALERT_RED_BG__", alert_red_bg)
+        .replace("__ALERT_RED_BORDER__", alert_red_border)
+        .replace("__ALERT_YELLOW_BG__", alert_yellow_bg)
+        .replace("__ALERT_YELLOW_BORDER__", alert_yellow_border)
+    )
