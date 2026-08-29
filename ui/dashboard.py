@@ -23,6 +23,7 @@ from config.settings import (
 )
 from modules.document_processor import DocumentProcessor, DocumentProcessingError
 from modules.security import SecurityScanner
+from modules.content_analyzer import ContentAnalyzer
 from modules.hashing import IntegrityHasher
 from modules.blockchain import BlockchainLedger
 from modules.history import TransformationHistoryDB
