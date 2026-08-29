@@ -244,6 +244,61 @@ STRICT RULES:
 - Ground all slide points strictly in the source text.
 """
 
+    elif artefact_type == "infographic":
+        return f"""{context_header}
+TASK: Generate a structured Infographic Brief based strictly on the source document.
+
+The infographic brief should be formatted for a designer to use as a layout specification.
+It must contain all the text, data points, and structure needed to create a visual infographic.
+
+REQUIRED SECTIONS:
+
+# INFOGRAPHIC BRIEF
+
+## 🎯 Headline
+[One punchy, attention-grabbing headline (max 12 words) summarizing the core message]
+
+## 📊 Key Stats / Data Points
+Generate exactly 4 visual stat panels in this format:
+| 📌 Label | Value / Finding |
+|---|---|
+| [Stat 1 Label] | [Stat 1 Value from source] |
+| [Stat 2 Label] | [Stat 2 Value from source] |
+| [Stat 3 Label] | [Stat 3 Value from source] |
+| [Stat 4 Label] | [Stat 4 Value from source] |
+
+## 🖼️ Visual Layout Recommendation
+[Describe the recommended infographic layout: e.g. timeline, flowchart, comparison columns, hub-and-spoke]
+[Suggest colors and icon themes aligned with the tone: {tone}]
+
+## 📝 Section Panels (Content Blocks)
+Generate 3-4 content panels, each with a heading and 2-3 bullet points:
+
+### Panel 1: [Title]
+• [Point 1 from source]
+• [Point 2 from source]
+
+### Panel 2: [Title]
+• [Point 1 from source]
+• [Point 2 from source]
+
+### Panel 3: [Title]
+• [Point 1 from source]
+• [Point 2 from source]
+
+## 💬 Key Message / Call to Action
+[One impactful closing statement or call-to-action for {audience}]
+
+## 🏷️ Footer / Attribution
+[Suggested footer text: e.g. "Source: [Document Title] | Prepared for {audience} | Classification: Internal"]
+
+STRICT RULES:
+- Use ONLY information from the source document.
+- If a specific stat or figure is not available in source, write "See source document."
+- Tailor messaging for a {audience} audience in a {tone.lower()} tone.
+- Do NOT fabricate numbers, statistics, or facts.
+"""
+
     else:
         return f"{context_header}\nTASK: Summarize and transform this document for {audience} in a {tone} tone."
 

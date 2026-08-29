@@ -315,6 +315,75 @@ We urge all operational units to implement these prescribed mitigations immediat
 **Speaker Notes:**
 In conclusion, prompt response has stabilized the environment. We now open the floor for questions and coordination remarks.
 """
+        elif artefact_type == "infographic":
+            # Build 4 stat panels from available grounded facts
+            stat_rows = []
+            if severity != "Not specified in source material.":
+                stat_rows.append(f"| 🔴 Severity Level | {severity} |")
+            if dates != "Not specified in source material.":
+                stat_rows.append(f"| 📅 Event Timeline | {dates} |")
+            if cves != "Not specified in source material.":
+                stat_rows.append(f"| 🛡️ CVEs Identified | {cves} |")
+            if ips != "Not specified in source material.":
+                stat_rows.append(f"| 🌐 Flagged IP Anchors | {ips} |")
+            if systems != "Not specified in source material.":
+                stat_rows.append(f"| 💻 Affected Systems | {systems} |")
+            # Pad to exactly 4 rows
+            fallbacks = [
+                "| 📋 Source Type | Operational Intelligence Brief |",
+                "| 🎯 Objective | " + objective + " |",
+                "| 👥 Target Audience | " + audience + " |",
+                "| 🔍 Analysis Tone | " + tone + " |",
+            ]
+            while len(stat_rows) < 4:
+                stat_rows.append(fallbacks[len(stat_rows) % len(fallbacks)])
+            stat_table = "\n".join(stat_rows[:4])
+
+            layout = "Hub-and-spoke" if audience in ["Executive", "Government/Official"] else "Timeline / flowchart"
+            color_theme = "Deep navy & red (urgent)" if tone.lower() == "urgent" else "Professional blue & grey" if tone.lower() == "professional" else "Clean white & teal"
+
+            # Content panels from paragraphs
+            panel1_pts = "\n".join([f"• {p[:120]}" for p in paragraphs[:2]]) or f"• {p1[:120]}"
+            panel2_pts = "\n".join([f"• {p[:120]}" for p in paragraphs[2:4]]) if len(paragraphs) >= 3 else f"• {p2[:120]}"
+            panel3_pts = "\n".join([f"• {p[:120]}" for p in paragraphs[4:6]]) if len(paragraphs) >= 5 else f"• {p3[:120]}"
+
+            return f"""# INFOGRAPHIC BRIEF
+
+## 🎯 Headline
+**{title}**
+
+## 📊 Key Stats / Data Points
+| 📌 Label | Value / Finding |
+|---|---|
+{stat_table}
+
+## 🖼️ Visual Layout Recommendation
+**Recommended Layout:** {layout} diagram with 4 surrounding data panels.
+**Color Theme:** {color_theme}.
+**Icon Style:** Flat, minimal icons aligned with a {tone.lower()} government/enterprise communication style.
+**Typography:** Bold sans-serif headline (e.g. Inter / DM Sans), monospace for IoC values.
+
+## 📝 Section Panels (Content Blocks)
+
+### Panel 1: 🔍 Situation Overview
+{panel1_pts}
+
+### Panel 2: ⚡ Impact & Indicators
+{panel2_pts}
+• Attack Vectors: {attack_vector}
+
+### Panel 3: 🛡️ Recommended Actions
+• Revoke compromised credentials and enforce MFA across affected accounts.
+• Block flagged network domains and IP indicators at perimeter gateways.
+• Preserve audit trail with cryptographic hash verification.
+{f'• Documented Mitigations: {chr(10).join(["• " + m for m in mitigations_list]) if mitigations_list != ["Not specified in source material."] else ""}'}
+
+## 💬 Key Message / Call to Action
+{tone_prefix}Immediate situational awareness and coordinated response are critical. Ensure all {audience.lower()} stakeholders are briefed and containment actions are executed without delay.
+
+## 🏷️ Footer / Attribution
+Source: {title} | Prepared for: {audience} | Classification: Internal — NTRO | Tone: {tone}
+"""
         else:
             return f"### Summary\n{p1}\n\n### Key Findings\n- {p2}\n- {p3}"
 
@@ -328,21 +397,14 @@ In conclusion, prompt response has stabilized the environment. We now open the f
         """Generates one output artefact using the appropriate engine."""
         prompt = build_prompt_for_artefact(artefact_type, source_text, config, grounded_facts)
 
-        # 1. Check if Gemini requested and API key available
-        if (self.provider in ["gemini", "auto"]) and self.gemini_key:
-            try:
-                return self._call_gemini(prompt)
-            except Exception:
-                pass
-
-        # 2. Check if OpenAI requested and API key available
+        # 1. Check if OpenAI requested and API key available
         if (self.provider in ["openai", "auto"]) and self.openai_key:
             try:
                 return self._call_openai(prompt)
             except Exception:
                 pass
 
-        # 3. Fallback to Grounded Deterministic Simulation Engine
+        # 2. Grounded Deterministic Simulation Engine (Gemini is isolated to PPT generation only)
         return self._generate_grounded_offline(artefact_type, source_text, config, grounded_facts)
 
     def generate_multiple_artefacts(
