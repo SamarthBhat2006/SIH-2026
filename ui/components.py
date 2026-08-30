@@ -49,7 +49,7 @@ def render_hero_banner() -> None:
 <span class="project-sticker sticker-white">🔐 SHA-256 Hashing</span>
 <span class="project-sticker sticker-lime">⛓️ Blockchain Ledger</span>
 </div>
-<h1 class="gumroad-hero-h1">1 Source to 5 Artefacts</h1>
+<h1 class="gumroad-hero-h1">1 to Multi Artefacts</h1>
 <p style="font-size:18px;line-height:1.56;letter-spacing:-0.108px;color:#242423;text-align:center;width:100%;max-width:720px;margin:0 auto 20px auto;display:block;">Transform raw operational briefs and cyber reports into grounded executive summaries, advisories, social threads, and presentations with cryptographic proof.</p>
 <div class="artefact-pills-row">
 <span class="artefact-pill">📋 Executive Summary</span>

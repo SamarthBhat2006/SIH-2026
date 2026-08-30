@@ -30,7 +30,6 @@ from modules.blockchain import BlockchainLedger
 from modules.history import TransformationHistoryDB
 from modules.ai_engine import AIEngine
 from modules.ppt_generator import generate_ppt_content, build_pptx_file, PPTGenerationError
-from modules.infographic_generator import build_infographic_image, InfographicGenerationError
 from ui.components import (
     render_hero_banner,
     render_pipeline_stepper,
@@ -89,12 +88,6 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
         st.session_state.generated_pptx_bytes = None
     if "generated_pptx_filename" not in st.session_state:
         st.session_state.generated_pptx_filename = ""
-    if "chk_infographic" not in st.session_state:
-        st.session_state.chk_infographic = False
-    if "generated_infographic_bytes" not in st.session_state:
-        st.session_state.generated_infographic_bytes = None
-    if "generated_infographic_filename" not in st.session_state:
-        st.session_state.generated_infographic_filename = ""
 
     # Audience Change Callback for Automatic Profile Application
     def on_audience_change():
@@ -289,7 +282,6 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
             chk_exec = st.checkbox("📋 Executive Summary", key="chk_exec")
             chk_adv = st.checkbox("🚨 Cybersecurity Advisory", key="chk_adv")
             chk_pres = st.checkbox("📊 Interactive Presentation Deck", key="chk_pres")
-            chk_infographic = st.checkbox("🖼️ Infographic Brief", key="chk_infographic")
         with c_opt2:
             chk_link = st.checkbox("💼 LinkedIn Post", key="chk_link")
             chk_x = st.checkbox("🧵 X / Twitter Thread", key="chk_x")
@@ -302,12 +294,9 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
         if chk_x: selected_outputs.append("x_thread")
         if chk_pres: selected_outputs.append("presentation")
         if chk_pptx: selected_outputs.append("presentation_pptx")
-        if chk_infographic: selected_outputs.append("infographic")
 
         if len(selected_outputs) == 1 and selected_outputs[0] == "presentation_pptx":
             btn_label = "Generate Presentation"
-        elif len(selected_outputs) == 1 and selected_outputs[0] == "infographic":
-            btn_label = "Generate Infographic Brief"
         else:
             btn_label = "Transform Content →"
 
@@ -397,19 +386,6 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                             config_meta,
                             grounded_facts
                         )
-                        # If this is the infographic, also generate the PNG image
-                        if a_type == "infographic" and results[a_type]:
-                            try:
-                                png_path = build_infographic_image(
-                                    results[a_type],
-                                    doc_title=st.session_state.source_name
-                                )
-                                st.session_state.generated_infographic_bytes = png_path.read_bytes()
-                                st.session_state.generated_infographic_filename = png_path.name
-                            except InfographicGenerationError as _ie:
-                                st.warning(f"Infographic image could not be rendered: {_ie}")
-                            except Exception:
-                                st.warning("Infographic image rendering failed. The text brief is still available.")
                 
                 st.session_state.pipeline_stage = 5
                 progress_bar.progress(90, text="Calculating SHA-256 Cryptographic Hashes...")
@@ -513,91 +489,30 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                         st.markdown(content)
 
                     else:
-                        # ── Infographic: show visual PNG + text brief ──────────
-                        if art_key == "infographic":
-                            infographic_bytes = st.session_state.get("generated_infographic_bytes")
-                            if infographic_bytes:
-                                col_c1, col_c2, col_c3 = st.columns([1.2, 1, 1])
-                                with col_c1:
-                                    st.download_button(
-                                        label="⬇️ Download Infographic (.png)",
-                                        data=infographic_bytes,
-                                        file_name=st.session_state.get(
-                                            "generated_infographic_filename",
-                                            f"AI_Infographic_{int(time.time())}.png"
-                                        ),
-                                        mime="image/png",
-                                        type="primary",
-                                        key=f"dl_png_{art_key}"
-                                    )
-                                with col_c2:
-                                    st.download_button(
-                                        label="Download Brief (.md)",
-                                        data=content,
-                                        file_name=f"infographic_brief_{int(time.time())}.md",
-                                        mime="text/markdown",
-                                        key=f"dl_md_{art_key}"
-                                    )
-                                with col_c3:
-                                    st.download_button(
-                                        label="Download Brief (.txt)",
-                                        data=content,
-                                        file_name=f"infographic_brief_{int(time.time())}.txt",
-                                        mime="text/plain",
-                                        key=f"dl_txt_{art_key}"
-                                    )
-                                st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
-                                st.markdown("**🖼️ Generated Infographic Preview**")
-                                st.image(infographic_bytes, use_container_width=True, caption="AI-Generated Intelligence Infographic")
-                            else:
-                                col_c1, col_c2 = st.columns([1, 1])
-                                with col_c1:
-                                    st.download_button(
-                                        label="Download Brief (.md)",
-                                        data=content,
-                                        file_name=f"infographic_brief_{int(time.time())}.md",
-                                        mime="text/markdown",
-                                        key=f"dl_md_only_{art_key}"
-                                    )
-                                with col_c2:
-                                    st.download_button(
-                                        label="Download Brief (.txt)",
-                                        data=content,
-                                        file_name=f"infographic_brief_{int(time.time())}.txt",
-                                        mime="text/plain",
-                                        key=f"dl_txt_only_{art_key}"
-                                    )
-                                st.warning("Visual infographic image could not be rendered. Showing text brief below.")
+                        col_c1, col_c2 = st.columns([1, 1])
+                        with col_c1:
+                            st.download_button(
+                                label=f"Download (.md)",
+                                data=content,
+                                file_name=f"{art_key}_{int(time.time())}.md",
+                                mime="text/markdown",
+                                key=f"dl_{art_key}"
+                            )
+                        with col_c2:
+                            st.download_button(
+                                label=f"Download (.txt)",
+                                data=content,
+                                file_name=f"{art_key}_{int(time.time())}.txt",
+                                mime="text/plain",
+                                key=f"dl_txt_{art_key}"
+                            )
 
-                            st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
-                            st.markdown("**📋 Infographic Content Brief**")
-                            st.markdown(content)
+                        st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
 
+                        if art_key == "presentation":
+                            render_interactive_slide_deck(content, key_suffix="dash")
                         else:
-                            col_c1, col_c2 = st.columns([1, 1])
-                            with col_c1:
-                                st.download_button(
-                                    label=f"Download (.md)",
-                                    data=content,
-                                    file_name=f"{art_key}_{int(time.time())}.md",
-                                    mime="text/markdown",
-                                    key=f"dl_{art_key}"
-                                )
-                            with col_c2:
-                                st.download_button(
-                                    label=f"Download (.txt)",
-                                    data=content,
-                                    file_name=f"{art_key}_{int(time.time())}.txt",
-                                    mime="text/plain",
-                                    key=f"dl_txt_{art_key}"
-                                )
-
-                            st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1rem 0;'>", unsafe_allow_html=True)
-
-                            if art_key == "presentation":
-                                render_interactive_slide_deck(content, key_suffix="dash")
-                            else:
-                                st.markdown(content)
+                            st.markdown(content)
 
             # Export Complete Transformation Package
             st.markdown("<hr style='border:0; border-top:1px solid #d1d5dc; margin: 1.25rem 0;'>", unsafe_allow_html=True)
