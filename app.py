@@ -18,7 +18,7 @@ from ui.about_view import render_about_view
 
 # Configure Streamlit Page
 st.set_page_config(
-    page_title="transform — NTRO AI Platform",
+    page_title="IntelliFlow — NTRO AI Platform",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"

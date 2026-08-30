@@ -18,7 +18,7 @@ def render_top_navbar(current_view: str = "Dashboard") -> None:
     with col_brand:
         st.markdown("""
         <div class="gumroad-brand-group" style="padding-top: 4px;">
-            <span class="gumroad-logo">⚡ transform</span>
+            <span class="gumroad-logo">⚡ intelliflow</span>
         </div>
         """, unsafe_allow_html=True)
 

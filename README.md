@@ -1,4 +1,4 @@
-# ⚡ transform — NTRO AI Content Transformation Platform
+# ⚡ IntelliFlow — NTRO AI Content Transformation Platform
 
 > **Smart India Hackathon 2026 | Problem Statement #26154**
 > Organisation: National Technical Research Organisation (NTRO) | Domain: Cyber & Blockchain
@@ -7,9 +7,9 @@
 
 ## 📌 About the Project
 
-**transform** is an AI-powered content transformation platform built for NTRO. It automates the conversion of raw intelligence documents — incident reports, threat advisories, and classified briefings — into multiple structured output artefacts tailored to different audiences and channels.
+**IntelliFlow** is an AI-powered content transformation platform built for NTRO. It automates the conversion of raw intelligence documents — incident reports, threat advisories, and classified briefings — into multiple structured output artefacts tailored to different audiences and channels.
 
-Instead of manually rewriting the same security intelligence for executives, technical teams, and social media, `transform` does it all in one click — powered by LLMs and secured with a blockchain-backed audit trail.
+Instead of manually rewriting the same security intelligence for executives, technical teams, and social media, `IntelliFlow` does it all in one click — powered by LLMs and secured with a blockchain-backed audit trail.
 
 ---
 
@@ -20,10 +20,11 @@ Upload any intelligence document (PDF, DOCX, or plain text) and instantly genera
 | Output Artefact | Description |
 |---|---|
 | 📋 **Executive Summary** | High-level briefing for senior leadership |
-| 🔐 **Cybersecurity Advisory** | Technical threat notice with IoCs and mitigations |
+| 🚨 **Cybersecurity Advisory** | Technical threat notice with IoCs and mitigations |
 | 💼 **LinkedIn Post** | Professional public awareness post |
-| 🐦 **X (Twitter) Thread** | Multi-tweet thread for rapid dissemination |
-| 📊 **Presentation Slides** | Structured slide deck content for briefings |
+| 🧵 **X (Twitter) Thread** | Multi-tweet thread for rapid dissemination |
+| 📊 **Interactive Presentation Deck** | Slide-by-slide briefing outline with presenter notes |
+| 📈 **PowerPoint Presentation (.pptx)** | Downloadable Microsoft PowerPoint deck generated automatically |
 
 Each transformation is customizable by **target audience**, **tone**, and **communication objective**.
 
@@ -57,7 +58,8 @@ The provider is selected via `AI_PROVIDER` in your `.env` file (`auto` | `gemini
 | **Frontend / UI** | [Streamlit](https://streamlit.io/) |
 | **AI — Primary** | Google Gemini 2.5 Flash (`google-genai`) |
 | **AI — Secondary** | OpenAI GPT-4o Mini (`openai`) |
-| **Document Parsing** | `pypdf` (PDF), `python-docx` (DOCX) |
+| **Presentation Export** | `python-pptx` (PowerPoint PPTX generator) |
+| **Document Parsing** | `pypdf` (PDF), `python-docx` (DOCX), `trafilatura` |
 | **Blockchain Ledger** | Custom SHA-256 blockchain (`modules/blockchain.py`) |
 | **Database** | SQLite via `modules/history.py` |
 | **Security Scanning** | Custom regex engine (`modules/security.py`) |
@@ -81,6 +83,7 @@ SIH-2026/
 │   ├── document_processor.py   # PDF, DOCX, and text file parsing
 │   ├── hashing.py              # SHA-256 document fingerprinting
 │   ├── history.py              # SQLite transformation history DB
+│   ├── ppt_generator.py        # Automated PowerPoint (.pptx) deck generation
 │   ├── prompts.py              # LLM prompt templates
 │   └── security.py             # Prompt injection & sensitive data detection
 ├── ui/
