@@ -30,6 +30,8 @@ AI_PROVIDER = os.getenv("AI_PROVIDER", "auto").lower()
 # Security & Guardrail Thresholds
 MAX_INPUT_CHARS = 50000
 MAX_UPLOAD_SIZE_MB = 10
+STRICT_INJECTION_BLOCKING = os.getenv("STRICT_INJECTION_BLOCKING", "false").lower() in ("true", "1", "yes")
+ENABLE_SENSITIVE_DATA_MASKING = os.getenv("ENABLE_SENSITIVE_DATA_MASKING", "false").lower() in ("true", "1", "yes")
 
 # Supported Output Types
 OUTPUT_TYPES = {

@@ -20,7 +20,9 @@ from config.settings import (
     OBJECTIVE_OPTIONS,
     AUDIENCE_PROFILES,
     OUTPUT_TYPES,
-    SAMPLE_DATA_DIR
+    SAMPLE_DATA_DIR,
+    STRICT_INJECTION_BLOCKING,
+    ENABLE_SENSITIVE_DATA_MASKING,
 )
 from modules.document_processor import DocumentProcessor, DocumentProcessingError
 from modules.security import SecurityScanner
@@ -316,6 +318,25 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
             elif not selected_outputs:
                 st.warning("Please select at least one output format.")
             else:
+                # 1. Real-time Security Screening & Policy Enforcement
+                sec_report = SecurityScanner.full_scan(st.session_state.source_content)
+                st.session_state.security_report = sec_report
+
+                if STRICT_INJECTION_BLOCKING and sec_report["injection_report"]["has_injection_risk"]:
+                    det_count = sec_report["injection_report"]["detected_count"]
+                    st.error(
+                        f"🛑 **Transformation Aborted by Security Policy:** Prompt injection risk detected "
+                        f"({det_count} signature{'s' if det_count > 1 else ''} flagged) and "
+                        f"`STRICT_INJECTION_BLOCKING` is enabled. Please sanitize input before proceeding."
+                    )
+                    st.session_state.pipeline_stage = 0
+                    st.stop()
+
+                # 2. Sensitive Data Masking Preparation
+                content_to_process = st.session_state.source_content
+                if ENABLE_SENSITIVE_DATA_MASKING and sec_report["sensitive_report"]["has_sensitive_data"]:
+                    content_to_process = SecurityScanner.mask_sensitive_data(content_to_process)
+
                 config_meta = {
                     "audience": st.session_state.cfg_audience,
                     "tone": st.session_state.cfg_tone,
@@ -331,7 +352,7 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                 
                 st.session_state.pipeline_stage = 3
                 progress_bar.progress(30, text="Extracting Grounded Facts & Anti-Hallucination Anchors...")
-                grounded_facts = ContentAnalyzer.extract_structured_facts(st.session_state.source_content)
+                grounded_facts = ContentAnalyzer.extract_structured_facts(content_to_process)
                 time.sleep(0.2)
                 
                 st.session_state.pipeline_stage = 4
@@ -347,7 +368,7 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                     if a_type == "presentation_pptx":
                         try:
                             ppt_json = generate_ppt_content(
-                                st.session_state.source_content,
+                                content_to_process,
                                 audience=st.session_state.cfg_audience,
                                 tone=st.session_state.cfg_tone
                             )
@@ -382,7 +403,7 @@ def render_dashboard(ledger: BlockchainLedger, history_db: TransformationHistory
                     else:
                         results[a_type] = ai.generate_single_artefact(
                             a_type,
-                            st.session_state.source_content,
+                            content_to_process,
                             config_meta,
                             grounded_facts
                         )

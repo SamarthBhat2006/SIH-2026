@@ -95,12 +95,15 @@ def render_security_badges(security_report: Dict[str, Any]) -> None:
     """Renders clean security notice cards with Gumroad accent styling."""
     inj = security_report.get("injection_report", {})
     sens = security_report.get("sensitive_report", {})
+    strict_on = security_report.get("strict_blocking_enabled", False)
+    masking_on = security_report.get("masking_enabled", False)
 
     if inj.get("has_injection_risk"):
         sigs = inj.get("signatures", [])
         matched_preview = ", ".join([f"'{s['matched_text']}'" for s in sigs[:3]])
+        header_title = "🛑 Prompt Injection Detected (STRICT BLOCKING ACTIVE)" if strict_on else f"⚠️ Potential Prompt Injection Detected ({inj.get('risk_level')} Risk)"
         html = f"""<div class="alert-vermillion-box">
-<div style="font-weight: 800; color: #dc341e; font-size: 0.95rem; margin-bottom: 0.3rem;">⚠️ Potential Prompt Injection Detected ({inj.get('risk_level')} Risk)</div>
+<div style="font-weight: 800; color: #dc341e; font-size: 0.95rem; margin-bottom: 0.3rem;">{header_title}</div>
 <div style="font-size: 0.88rem; color: var(--color-graphite); margin-bottom: 0.35rem;">Adversarial instructions flagged in source text: <strong>{matched_preview}</strong></div>
 <div style="font-size: 0.82rem; color: var(--color-muted, #a1a1aa);">{inj.get('mitigation_note')}</div>
 </div>"""
@@ -109,8 +112,10 @@ def render_security_badges(security_report: Dict[str, Any]) -> None:
     if sens.get("has_sensitive_data"):
         findings = sens.get("findings_by_category", {})
         categories = list(findings.keys())
-        html = f"""<div class="alert-yellow-box">
-<div style="font-weight: 800; color: #d97706; font-size: 0.95rem; margin-bottom: 0.3rem;">🔍 Sensitive Information Patterns Detected ({sens.get('total_sensitive_items')} Matches)</div>
+        box_class = "alert-yellow-box" if not masking_on else "alert-yellow-box"
+        header_title = f"🔒 Sensitive Data Detected — Redaction Active ({sens.get('total_sensitive_items')} Items)" if masking_on else f"🔍 Sensitive Information Patterns Detected ({sens.get('total_sensitive_items')} Matches)"
+        html = f"""<div class="{box_class}">
+<div style="font-weight: 800; color: #d97706; font-size: 0.95rem; margin-bottom: 0.3rem;">{header_title}</div>
 <div style="font-size: 0.88rem; color: var(--color-graphite); margin-bottom: 0.35rem;">Detected patterns: <strong>{', '.join(categories)}</strong></div>
 <div style="font-size: 0.82rem; color: var(--color-muted, #a1a1aa);">{sens.get('advisory_note')}</div>
 </div>"""

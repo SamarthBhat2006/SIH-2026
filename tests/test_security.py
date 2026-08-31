@@ -29,3 +29,26 @@ def test_sensitive_data_detection():
     assert "Email Address" in res["findings_by_category"]
     assert "IPv4 Address" in res["findings_by_category"]
     assert len(res["findings_by_category"]["Email Address"]) >= 1
+
+def test_sensitive_data_masking():
+    raw_text = (
+        "Contact me at admin@ntro.gov.in or +1-555-123-4567. "
+        "The server is at 10.0.0.1. Secret api_key = 'abcdef12345678901234' and password: supersecretpass. "
+        "Use key AIzaSyD98234729384729384729384729384729."
+    )
+    masked = SecurityScanner.mask_sensitive_data(raw_text)
+    
+    # Assert sensitive values are redacted
+    assert "admin@ntro.gov.in" not in masked
+    assert "10.0.0.1" not in masked
+    assert "abcdef12345678901234" not in masked
+    assert "supersecretpass" not in masked
+    assert "AIzaSyD98234729384729384729384729384729" not in masked
+    
+    # Assert redaction tags are present
+    assert "[REDACTED_EMAIL]" in masked
+    assert "[REDACTED_IP_ADDRESS]" in masked
+    assert "[REDACTED_SECRET_TOKEN]" in masked
+    assert "[REDACTED_PASSWORD]" in masked
+    assert "[REDACTED_API_KEY]" in masked
+
